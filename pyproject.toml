@@ -17,7 +17,8 @@ dev = [
     "python-dotenv (>=1.1.0,<2.0.0)",
     "flake8-quotes (>=3.4.0,<4.0.0)",
     "black (>=25.1.0,<26.0.0)",
-    "isort (>=7.0.0,<8.0.0)"
+    "isort (>=7.0.0,<8.0.0)",
+    "flake8-pyproject (>=1.2.3,<2.0.0)"
 ]
 
 
@@ -25,3 +26,73 @@ dev = [
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 package-mode = false
+
+
+[tool.flake8]
+max-line-length = 79
+max-complexity = 6
+count = true
+per-file-ignores = [
+    "__init__.py:F401,F403",
+    "**/settings.py:E501"
+]
+extend-ignore = [
+    "E203",
+    "E231",
+    "E241",
+    "W503",
+    "F811",
+    "R503",
+    "R504",
+    "R505"
+]
+exclude = [
+    ".git/",
+    "__pycache__/",
+    "**/migrations/",
+    "manage.py",
+    "settings.py",
+    "env/",
+    "venv/",
+    ".env/",
+    ".venv/",
+    "tests/",
+    ".pytest_cache",
+    ".vscode/",
+    ".idea/"
+]
+
+[tool.black]
+line-length = 79
+target-version = ['py311']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | __pycache__
+  | \.pytest_cache
+  | \.vscode
+  | \.idea
+  | venv
+  | env
+  | \.venv
+  | \.env
+  | migrations
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 79
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+known_local_folder = [
+    "authors",
+    "books",
+    "library_service",
+    "users",
+]
+skip = ["migrations"]
+
