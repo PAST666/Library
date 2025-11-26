@@ -18,7 +18,7 @@ class User(AbstractUser):
         "Имя", max_length=MAX_NAME_LENGTH, blank=True
     )
     last_name = models.CharField(
-        "Имя", max_length=MAX_NAME_LENGTH, blank=True
+        "Фамилия", max_length=MAX_NAME_LENGTH, blank=True
     )
     email = models.EmailField(
         "Почта", max_length=MAX_EMAIL_LENGTH, unique=True
