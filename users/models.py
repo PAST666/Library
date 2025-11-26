@@ -15,10 +15,10 @@ from .constants import (
 
 class User(AbstractUser):
     first_name = models.CharField(
-        "Имя", max_length=MAX_NAME_LENGTH, blank=True
+        "Имя", max_length=MAX_NAME_LENGTH
     )
     last_name = models.CharField(
-        "Фамилия", max_length=MAX_NAME_LENGTH, blank=True
+        "Фамилия", max_length=MAX_NAME_LENGTH
     )
     email = models.EmailField(
         "Почта", max_length=MAX_EMAIL_LENGTH, unique=True
@@ -33,7 +33,7 @@ class User(AbstractUser):
     )
     is_blocked = models.BooleanField("Заблокирован", default=False)
     USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = ["email"]
+    REQUIRED_FIELDS = ["first_name", "last_name", "email"]
 
     class Meta:
         verbose_name = "Пользователь"
