@@ -62,7 +62,7 @@ class User(AbstractUser):
         "Страна", choices=CountryName.choices, max_length=MAX_COUNTRY_LENGTH, blank=True
     )
     is_blocked = models.BooleanField("Заблокирован", default=False)
-    USERNAME_FIELD = "username"
+    USERNAME_FIELD = ["username", "email"]
     REQUIRED_FIELDS = ["first_name", "last_name", "email"]
 
     class Meta:
