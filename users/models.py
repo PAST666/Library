@@ -13,7 +13,8 @@ from .constants import (
     TOKEN_EXPIRES_MINUTES,
     RUSSIAN_LETTERS_RE,
     EMAIL_ALLOWED_DOMAINS_RE,
-    PHONE_NUMBER_RE
+    PHONE_NUMBER_RE,
+    CountryName
 )
 
 
@@ -58,7 +59,7 @@ class User(AbstractUser):
                   "дефисов и пробелов. Допускается весь номер указывать слитно."
     )
     country = models.CharField(
-        "Страна", max_length=MAX_COUNTRY_LENGTH, blank=True
+        "Страна", choices=CountryName.choices, max_length=MAX_COUNTRY_LENGTH, blank=True
     )
     is_blocked = models.BooleanField("Заблокирован", default=False)
     USERNAME_FIELD = "username"
