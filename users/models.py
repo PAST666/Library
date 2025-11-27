@@ -11,6 +11,8 @@ from .constants import (
     MAX_NAME_LENGTH,
     MAX_PHONE_LENGTH,
     TOKEN_EXPIRES_MINUTES,
+    RUSSIAN_LETTERS_RE,
+    EMAIL_ALLOWED_DOMAINS_RE
 )
 
 
@@ -19,7 +21,7 @@ class User(AbstractUser):
         "Имя",
         max_length=MAX_NAME_LENGTH,
         validators=[RegexValidator(
-            r'^[а-яА-ЯёЁ]+$',
+            RUSSIAN_LETTERS_RE,
             "Имя пользователя может содержать только русские буквы!"
         )],
         help_text="Имя пользователя может содержать только русские буквы"
@@ -28,13 +30,19 @@ class User(AbstractUser):
         "Фамилия",
         max_length=MAX_NAME_LENGTH,
         validators=[RegexValidator(
-            r'^[а-яА-ЯёЁ]+$',
+            RUSSIAN_LETTERS_RE,
             "Фамилия пользователя может содержать только русские буквы!"
         )],
         help_text="Фамилия пользователя может содержать только русские буквы"
     )
     email = models.EmailField(
-        "Почта", max_length=MAX_EMAIL_LENGTH, unique=True
+        "Почта",
+        max_length=MAX_EMAIL_LENGTH,
+        unique=True,
+        validators=[RegexValidator(
+            EMAIL_ALLOWED_DOMAINS_RE,
+            "Разрешены только почтовые домены: gmail.com, yandex.ru, ya.ru, mail.ru, yahoo.com, outlook.com"
+        )]
     )
     phone_number = models.CharField(
         "Телефон",
