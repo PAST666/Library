@@ -14,7 +14,7 @@ from .constants import (
     RUSSIAN_LETTERS_RE,
     EMAIL_ALLOWED_DOMAINS_RE,
     PHONE_NUMBER_RE,
-    CountryName
+    CountryName,
 )
 
 
