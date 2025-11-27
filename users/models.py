@@ -12,7 +12,8 @@ from .constants import (
     MAX_PHONE_LENGTH,
     TOKEN_EXPIRES_MINUTES,
     RUSSIAN_LETTERS_RE,
-    EMAIL_ALLOWED_DOMAINS_RE
+    EMAIL_ALLOWED_DOMAINS_RE,
+    PHONE_NUMBER_RE
 )
 
 
@@ -22,7 +23,7 @@ class User(AbstractUser):
         max_length=MAX_NAME_LENGTH,
         validators=[RegexValidator(
             RUSSIAN_LETTERS_RE,
-            "Имя пользователя может содержать только русские буквы!"
+            "Имя пользователя может содержать только русские буквы"
         )],
         help_text="Имя пользователя может содержать только русские буквы"
     )
@@ -31,7 +32,7 @@ class User(AbstractUser):
         max_length=MAX_NAME_LENGTH,
         validators=[RegexValidator(
             RUSSIAN_LETTERS_RE,
-            "Фамилия пользователя может содержать только русские буквы!"
+            "Фамилия пользователя может содержать только русские буквы"
         )],
         help_text="Фамилия пользователя может содержать только русские буквы"
     )
@@ -47,7 +48,14 @@ class User(AbstractUser):
     phone_number = models.CharField(
         "Телефон",
         max_length=MAX_PHONE_LENGTH,
-        blank=True,
+        unique=True,
+        validators=[RegexValidator(
+            PHONE_NUMBER_RE,
+            "Неправильный формат номера"
+        )],
+        help_text="Номер телефона начинается с +7 или 8, далее - код оператора 3 цифры, его допускается брать в "
+                  "скобки, далее - 7 цифр группами: 3 цифры, 2 цифры, 2 цифры, слитно или с использованием скобок, "
+                  "дефисов и пробелов. Допускается весь номер указывать слитно."
     )
     country = models.CharField(
         "Страна", max_length=MAX_COUNTRY_LENGTH, blank=True
