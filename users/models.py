@@ -1,6 +1,7 @@
 import uuid
 
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
 from django.db import models
 from django.utils import timezone
 
@@ -15,10 +16,22 @@ from .constants import (
 
 class User(AbstractUser):
     first_name = models.CharField(
-        "Имя", max_length=MAX_NAME_LENGTH
+        "Имя",
+        max_length=MAX_NAME_LENGTH,
+        validators=[RegexValidator(
+            r'^[а-яА-ЯёЁ]+$',
+            "Имя пользователя может содержать только русские буквы!"
+        )],
+        help_text="Имя пользователя может содержать только русские буквы"
     )
     last_name = models.CharField(
-        "Фамилия", max_length=MAX_NAME_LENGTH
+        "Фамилия",
+        max_length=MAX_NAME_LENGTH,
+        validators=[RegexValidator(
+            r'^[а-яА-ЯёЁ]+$',
+            "Фамилия пользователя может содержать только русские буквы!"
+        )],
+        help_text="Фамилия пользователя может содержать только русские буквы"
     )
     email = models.EmailField(
         "Почта", max_length=MAX_EMAIL_LENGTH, unique=True
