@@ -69,6 +69,10 @@ class User(AbstractUser):
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
 
+    @property
+    def full_name(self):
+        return f"{self.last_name} {self.first_name}".rstrip()
+
     def __str__(self):
         return self.username
 
