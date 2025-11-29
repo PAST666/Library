@@ -14,8 +14,15 @@ from .constants import (
     RUSSIAN_LETTERS_RE,
     EMAIL_ALLOWED_DOMAINS_RE,
     PHONE_NUMBER_RE,
-    CountryName,
 )
+
+
+class Country(models.Model):
+    name = models.CharField(max_length=MAX_COUNTRY_LENGTH)
+    code = models.CharField(max_length=10, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class User(AbstractUser):
@@ -58,11 +65,11 @@ class User(AbstractUser):
                   "скобки, далее - 7 цифр группами: 3 цифры, 2 цифры, 2 цифры, слитно или с использованием скобок, "
                   "дефисов и пробелов. Допускается весь номер указывать слитно."
     )
-    country = models.CharField(
-        "Страна", choices=CountryName.choices, max_length=MAX_COUNTRY_LENGTH, blank=True
+    country = models.ForeignKey(
+        Country, on_delete=models.SET_NULL, null=True, blank=True
     )
     is_blocked = models.BooleanField("Заблокирован", default=False)
-    USERNAME_FIELD = ["username", "email"]
+    USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["first_name", "last_name", "email"]
 
     class Meta:

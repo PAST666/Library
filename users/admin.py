@@ -12,7 +12,7 @@ class UserAdmin(BaseUserAdmin):
         "last_name",
         "email",
         "phone_number",
-        "photo",
+        "country",
         "is_blocked",
     )
     search_fields = (
@@ -20,6 +20,6 @@ class UserAdmin(BaseUserAdmin):
         "last_name",
         "email",
         "phone_number",
-        "photo",
+        "country"
         "username",
     )
