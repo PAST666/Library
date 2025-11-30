@@ -80,7 +80,7 @@ class User(AbstractUser):
         max_length=MAX_COUNTRY_LENGTH,
         null=True)
     is_blocked = models.BooleanField("Заблокирован", default=False)
-    USERNAME_FIELD = "email"
+    USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["first_name", "last_name", "email"]
 
     class Meta:
