@@ -13,13 +13,17 @@ class UserAdmin(BaseUserAdmin):
         "email",
         "phone_number",
         "country",
+        "role",
         "is_blocked",
     )
     search_fields = (
+        "username",
         "first_name",
         "last_name",
         "email",
         "phone_number",
-        "country"
-        "username",
+        "country",
+        "role",
+        "is_blocked",
+
     )

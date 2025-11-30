@@ -14,12 +14,13 @@ from .constants import (
     RUSSIAN_LETTERS_RE,
     EMAIL_ALLOWED_DOMAINS_RE,
     PHONE_NUMBER_RE,
+    Roles
 )
 
 
 class Country(models.Model):
     name = models.CharField(max_length=MAX_COUNTRY_LENGTH)
-    code = models.CharField(max_length=10, unique=True)
+    code = models.CharField(max_length=2, unique=True)
 
     def __str__(self):
         return self.name
@@ -63,13 +64,23 @@ class User(AbstractUser):
         )],
         help_text="Номер телефона начинается с +7 или 8, далее - код оператора 3 цифры, его допускается брать в "
                   "скобки, далее - 7 цифр группами: 3 цифры, 2 цифры, 2 цифры, слитно или с использованием скобок, "
-                  "дефисов и пробелов. Допускается весь номер указывать слитно."
+                  "дефисов и пробелов. Допускается весь номер указывать слитно.",
+        null=True,
+        blank=True
     )
     country = models.ForeignKey(
-        Country, on_delete=models.SET_NULL, null=True, blank=True
+        Country,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
     )
+    role = models.CharField(
+        "Роль",
+        choices=Roles.choices,
+        max_length=MAX_COUNTRY_LENGTH,
+        null=True)
     is_blocked = models.BooleanField("Заблокирован", default=False)
-    USERNAME_FIELD = "username"
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name", "email"]
 
     class Meta:
