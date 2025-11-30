@@ -3,11 +3,11 @@ from django.core.management.base import BaseCommand
 from users.models import Country
 
 class Command(BaseCommand):
-    help = 'Загрузить список стран из файла countries.txt'
+    help = 'Загрузить список стран из файла countries.json'
 
     def handle(self, *args, **kwargs):
         try:
-            with open('data/countries.txt', 'r', encoding='utf-8') as f:
+            with open('data/countries.json', 'r', encoding='utf-8') as f:
                 countries = json.load(f)
 
                 for country in countries:
