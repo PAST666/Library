@@ -10,6 +10,7 @@ from .constants import (
     MAX_EMAIL_LENGTH,
     MAX_NAME_LENGTH,
     MAX_PHONE_LENGTH,
+    MAX_CODE_LENGTH,
     TOKEN_EXPIRES_MINUTES,
     RUSSIAN_LETTERS_RE,
     EMAIL_ALLOWED_DOMAINS_RE,
@@ -19,8 +20,8 @@ from .constants import (
 
 
 class Country(models.Model):
-    name = models.CharField(max_length=MAX_COUNTRY_LENGTH)
-    code = models.CharField(max_length=2, unique=True)
+    name = models.CharField(max_length=MAX_COUNTRY_LENGTH, unique=True)
+    code = models.CharField(max_length=MAX_CODE_LENGTH, unique=True)
 
     def __str__(self):
         return self.name
