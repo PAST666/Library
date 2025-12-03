@@ -12,10 +12,12 @@ from .constants import (
     MAX_PHONE_LENGTH,
     MAX_CODE_LENGTH,
     TOKEN_EXPIRES_MINUTES,
-    RUSSIAN_LETTERS_RE,
     EMAIL_ALLOWED_DOMAINS_RE,
     PHONE_NUMBER_RE,
     Roles
+)
+from .validators import (
+    UserFirstNameAndLastNameValidator
 )
 
 
@@ -31,19 +33,13 @@ class User(AbstractUser):
     first_name = models.CharField(
         "Имя",
         max_length=MAX_NAME_LENGTH,
-        validators=[RegexValidator(
-            RUSSIAN_LETTERS_RE,
-            "Имя пользователя может содержать только русские буквы"
-        )],
+        validators=[UserFirstNameAndLastNameValidator()],
         help_text="Имя пользователя может содержать только русские буквы"
     )
     last_name = models.CharField(
         "Фамилия",
         max_length=MAX_NAME_LENGTH,
-        validators=[RegexValidator(
-            RUSSIAN_LETTERS_RE,
-            "Фамилия пользователя может содержать только русские буквы"
-        )],
+        validators=[UserFirstNameAndLastNameValidator()],
         help_text="Фамилия пользователя может содержать только русские буквы"
     )
     email = models.EmailField(
