@@ -2,6 +2,7 @@ import json
 from django.core.management.base import BaseCommand
 from users.models import Country
 
+
 class Command(BaseCommand):
     help = 'Загрузить список стран из файла countries.json'
 
