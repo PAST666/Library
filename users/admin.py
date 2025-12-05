@@ -8,24 +8,13 @@ from users.models import User
 class UserAdmin(BaseUserAdmin):
     list_display = (
         "username",
-        "first_name",
-        "last_name",
-        "email",
-        "phone_number",
-        "age",
-        "country",
+        "full_name",
         "role",
         "is_blocked",
     )
     search_fields = (
         "username",
-        "first_name",
-        "last_name",
+        "full_name",
         "email",
         "phone_number",
-        "age",
-        "country",
-        "role",
-        "is_blocked",
-
     )
