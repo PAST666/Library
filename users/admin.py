@@ -11,10 +11,61 @@ class UserAdmin(BaseUserAdmin):
         "full_name",
         "role",
         "is_blocked",
+        "date_joined",
+        "last_login",
     )
     search_fields = (
         "username",
         "full_name",
         "email",
         "phone_number",
+    )
+    readonly_fields = ("date_joined", "last_login")
+
+    fieldsets = (
+        ("Основная информация", {
+            "fields": (
+                "username",
+                "password",
+                "role",
+            )
+        }),
+        ("Контактные данные", {
+            "fields": (
+                "first_name",
+                "last_name",
+                "email",
+                "phone_number",
+                "country",
+            )
+        }),
+        ("Статус", {
+            "fields": (
+                "is_active",
+                "is_blocked",
+            )
+        }),
+        ("Права доступа", {
+            "classes": ("collapse",),
+            "fields": (
+                "is_staff",
+                "is_superuser",
+                "groups",
+                "user_permissions",
+            )
+        }),
+        ("Системная информация", {
+            "classes": ("collapse",),
+            "fields": (
+                "last_login",
+                "date_joined",
+            ),
+        }),
+    )
+
+    add_fieldsets = (
+        (None, {
+            "classes": ("wide",),
+            "fields": ("username", "email", "password1", "password2", "role"),
+        }),
     )

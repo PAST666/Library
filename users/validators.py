@@ -1,5 +1,6 @@
 from django.core.validators import RegexValidator
 
+
 class UserFirstNameAndLastNameValidator(RegexValidator):
     code = "invalid name"
     message = _(

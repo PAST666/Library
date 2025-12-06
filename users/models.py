@@ -84,6 +84,8 @@ class User(AbstractUser):
         max_length=MAX_COUNTRY_LENGTH,
         null=True)
     is_blocked = models.BooleanField("Заблокирован", default=False)
+    date_joined = models.DateTimeField(auto_now_add=True)
+    last_login = models.DateTimeField(auto_now=True)
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["first_name", "last_name", "email"]
 
