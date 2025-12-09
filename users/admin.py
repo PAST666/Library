@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from users.models import User
+from users.models import User, ActivationToken
 
 
 @admin.register(User)
@@ -21,6 +21,7 @@ class UserAdmin(BaseUserAdmin):
         "phone_number",
     )
     readonly_fields = ("date_joined", "last_login")
+    ordering = ("username",)
 
     fieldsets = (
         ("Основная информация", {
@@ -69,3 +70,10 @@ class UserAdmin(BaseUserAdmin):
             "fields": ("username", "email", "password1", "password2", "role"),
         }),
     )
+
+
+@admin.register(ActivationToken)
+class ActivationTokenAdmin(admin.ModelAdmin):
+    list_display = ("user", "token", "created_at", "expires_at")
+    search_fields = ("user", "token")
+    list_filter = ("created_at", "expires_at")
