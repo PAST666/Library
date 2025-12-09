@@ -25,6 +25,11 @@ class Country(models.Model):
     name = models.CharField(max_length=MAX_COUNTRY_LENGTH, unique=True)
     code = models.CharField(max_length=MAX_CODE_LENGTH, unique=True)
 
+    class Meta:
+        verbose_name = "Страна"
+        verbose_name_plural = "Страны"
+        ordering_by = ("name",)
+
     def __str__(self):
         return self.name
 
@@ -82,7 +87,9 @@ class User(AbstractUser):
         "Роль",
         choices=Roles.choices,
         max_length=MAX_COUNTRY_LENGTH,
-        null=True)
+        null=True,
+        blank=True
+    )
     is_blocked = models.BooleanField("Заблокирован", default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
@@ -92,6 +99,7 @@ class User(AbstractUser):
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
+        ordering_by = ("username",)
 
     @property
     def full_name(self):
