@@ -28,7 +28,7 @@ class Country(models.Model):
     class Meta:
         verbose_name = "Страна"
         verbose_name_plural = "Страны"
-        ordering_by = ("name",)
+        ordering = ("name",)
 
     def __str__(self):
         return self.name
@@ -99,7 +99,7 @@ class User(AbstractUser):
     class Meta:
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
-        ordering_by = ("username",)
+        ordering = ("username",)
 
     @property
     def full_name(self):
