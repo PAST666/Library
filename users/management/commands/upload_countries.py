@@ -6,7 +6,7 @@ from users.models import Country
 
 
 class Command(BaseCommand):
-    help = 'Загрузить список стран из файла countries.json'
+    help = "Загрузить список стран из файла countries.json"
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -21,7 +21,7 @@ class Command(BaseCommand):
 
         try:
             self.upload_countries(filepath)
-            self.stdout.write(self.style.SUCCESS("Countries loaded successfully"))
+            self.stdout.write(self.style.SUCCESS("Список стран успешно загружен"))
         except FileNotFoundError:
             self.stdout.write(self.style.ERROR(f"Файл '{filepath}' не найден"))
         except json.JSONDecodeError as e:
@@ -44,7 +44,7 @@ class Command(BaseCommand):
         action(filepath)
 
     def upload_countries_from_json(self, filepath: str) -> None:
-        with open(filepath, 'r', encoding='utf-8') as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             countries_data = json.load(f)
-        countries = [Country(name=country['name'], code=country['code']) for country in countries_data]
+        countries = [Country(name=country["name"], code=country["code"]) for country in countries_data]
         Country.objects.bulk_create(countries)
