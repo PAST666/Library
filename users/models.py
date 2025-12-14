@@ -21,8 +21,8 @@ from .validators import (
 
 
 class Country(models.Model):
-    name = models.CharField(max_length=MAX_COUNTRY_LENGTH, unique=True)
-    code = models.CharField(max_length=MAX_CODE_LENGTH, unique=True)
+    name = models.CharField(label="Название страны", max_length=MAX_COUNTRY_LENGTH, unique=True)
+    code = models.CharField(label="Буквенный код страны", max_length=MAX_CODE_LENGTH, unique=True)
 
     class Meta:
         verbose_name = "Страна"
