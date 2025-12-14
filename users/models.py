@@ -80,7 +80,6 @@ class User(AbstractUser):
         "Роль",
         choices=Roles.choices,
         max_length=MAX_COUNTRY_LENGTH,
-        null=True,
         blank=True
     )
     is_blocked = models.BooleanField("Заблокирован", default=False)
