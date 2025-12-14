@@ -1,7 +1,6 @@
 import uuid
 
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import RegexValidator
 from django.db import models
 from django.utils import timezone
 
@@ -12,12 +11,12 @@ from .constants import (
     MAX_PHONE_LENGTH,
     MAX_CODE_LENGTH,
     TOKEN_EXPIRES_MINUTES,
-    EMAIL_ALLOWED_DOMAINS_RE,
-    PHONE_NUMBER_RE,
     Roles
 )
 from .validators import (
-    UserFirstNameAndLastNameValidator
+    KirillicLettersValidator,
+    EmailValidator,
+    PhoneNumberValidator
 )
 
 
@@ -38,32 +37,26 @@ class User(AbstractUser):
     first_name = models.CharField(
         "Имя",
         max_length=MAX_NAME_LENGTH,
-        validators=[UserFirstNameAndLastNameValidator()],
-        help_text="Имя пользователя может содержать только русские буквы"
+        validators=[KirillicLettersValidator()],
+        help_text="Может содержать только русские буквы"
     )
     last_name = models.CharField(
         "Фамилия",
         max_length=MAX_NAME_LENGTH,
-        validators=[UserFirstNameAndLastNameValidator()],
-        help_text="Фамилия пользователя может содержать только русские буквы"
+        validators=[KirillicLettersValidator()],
+        help_text="Может содержать только русские буквы"
     )
     email = models.EmailField(
         "Почта",
         max_length=MAX_EMAIL_LENGTH,
         unique=True,
-        validators=[RegexValidator(
-            EMAIL_ALLOWED_DOMAINS_RE,
-            "Разрешены только почтовые домены: gmail.com, yandex.ru, ya.ru, mail.ru, yahoo.com, outlook.com"
-        )]
+        validators=[EmailValidator()]
     )
     phone_number = models.CharField(
         "Телефон",
         max_length=MAX_PHONE_LENGTH,
         unique=True,
-        validators=[RegexValidator(
-            PHONE_NUMBER_RE,
-            "Неправильный формат номера"
-        )],
+        validators=[PhoneNumberValidator()],
         help_text="Номер телефона начинается с +7 или 8, далее - код оператора 3 цифры, его допускается брать в "
                   "скобки, далее - 7 цифр группами: 3 цифры, 2 цифры, 2 цифры, слитно или с использованием скобок, "
                   "дефисов и пробелов. Допускается весь номер указывать слитно.",
