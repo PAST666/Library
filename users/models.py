@@ -38,13 +38,11 @@ class User(AbstractUser):
         "Имя",
         max_length=MAX_NAME_LENGTH,
         validators=[KirillicLettersValidator()],
-        help_text="Может содержать только русские буквы"
     )
     last_name = models.CharField(
         "Фамилия",
         max_length=MAX_NAME_LENGTH,
         validators=[KirillicLettersValidator()],
-        help_text="Может содержать только русские буквы"
     )
     email = models.EmailField(
         "Почта",
@@ -57,9 +55,6 @@ class User(AbstractUser):
         max_length=MAX_PHONE_LENGTH,
         unique=True,
         validators=[PhoneNumberValidator()],
-        help_text="Номер телефона начинается с +7 или 8, далее - код оператора 3 цифры, его допускается брать в "
-                  "скобки, далее - 7 цифр группами: 3 цифры, 2 цифры, 2 цифры, слитно или с использованием скобок, "
-                  "дефисов и пробелов. Допускается весь номер указывать слитно.",
         null=True,
         blank=True
     )
