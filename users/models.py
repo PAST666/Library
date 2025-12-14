@@ -80,7 +80,7 @@ class User(AbstractUser):
         "Роль",
         choices=Roles.choices,
         max_length=MAX_COUNTRY_LENGTH,
-        blank=True
+        default=Roles.USER
     )
     is_blocked = models.BooleanField("Заблокирован", default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
