@@ -98,7 +98,7 @@ class User(AbstractUser):
 
 class ActivationToken(models.Model):
 
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
         verbose_name="Пользователь",
