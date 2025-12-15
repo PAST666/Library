@@ -127,7 +127,8 @@ class ActivationToken(models.Model):
             )
         ]
 
-    def token_is_valid(self):
+    @property
+    def is_valid(self):
         return self.expires_at > timezone.now()
 
     def save(self, *args, **kwargs):
