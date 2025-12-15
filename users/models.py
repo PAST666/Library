@@ -2,6 +2,7 @@ import uuid
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 
 from .constants import (
@@ -116,6 +117,15 @@ class ActivationToken(models.Model):
     expires_at = models.DateTimeField(
         "Истекает",
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user"],
+                condition=Q(expires_at__gt=timezone.now()),
+                name="unique_active_token",
+            )
+        ]
 
     def token_is_valid(self):
         return self.expires_at > timezone.now()
