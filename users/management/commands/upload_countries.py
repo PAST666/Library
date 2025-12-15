@@ -32,7 +32,6 @@ class Command(BaseCommand):
     def upload_countries(self, filepath: str) -> None:
         actions = {
             ".json": self.upload_countries_from_json,
-            # ".csv": self.upload_countries_from_csv,
         }
         _, ext = os.path.splitext(filepath)
 
