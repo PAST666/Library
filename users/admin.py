@@ -23,6 +23,11 @@ class UserAdmin(BaseUserAdmin):
     readonly_fields = ("date_joined", "last_login")
     ordering = ("username",)
 
+    list_filter = (
+        "is_blocked",
+        "role",
+    )
+
     fieldsets = (
         ("Основная информация", {
             "fields": (
