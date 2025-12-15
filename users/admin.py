@@ -80,5 +80,4 @@ class UserAdmin(BaseUserAdmin):
 @admin.register(ActivationToken)
 class ActivationTokenAdmin(admin.ModelAdmin):
     list_display = ("user", "token", "created_at", "expires_at")
-    search_fields = ("user", "token")
-    list_filter = ("created_at", "expires_at")
+    search_fields = ("user__username", "token")
