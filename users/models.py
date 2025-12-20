@@ -14,10 +14,15 @@ from .constants import (
     TOKEN_EXPIRES_MINUTES,
     Roles
 )
+
 from .validators import (
     KirillicLettersValidator,
     EmailValidator,
     PhoneNumberValidator
+)
+
+from .managers import (
+    ActivationTokenManager
 )
 
 
@@ -118,6 +123,8 @@ class ActivationToken(models.Model):
         "Истекает",
     )
 
+    objects = ActivationTokenManager()
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
@@ -130,14 +137,6 @@ class ActivationToken(models.Model):
     @property
     def is_valid(self):
         return self.expires_at > timezone.now()
-
-    def save(self, *args, **kwargs):
-        if not self.expires_at:
-            self.expires_at = timezone.now() + timezone.timedelta(
-                minutes=TOKEN_EXPIRES_MINUTES,
-            )
-
-        return super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return f"{self.user.username} -> {self.token}"
