@@ -12,7 +12,6 @@ from .constants import (
     MAX_NAME_LENGTH,
     MAX_PHONE_LENGTH,
     MAX_CODE_LENGTH,
-    TOKEN_EXPIRES_MINUTES,
     Roles
 )
 
@@ -111,6 +110,30 @@ class User(AbstractUser):
     def full_name(self) -> str:
         return f"{self.last_name} {self.first_name}"
 
+    @property
+    def is_admin(self) -> bool:
+        return self.role == Roles.ADMIN
+
+    @property
+    def is_moderator(self) -> bool:
+        return self.role == Roles.MODERATOR
+
+    @property
+    def is_editor(self) -> bool:
+        return self.role == Roles.EDITOR
+
+    @property
+    def is_librarian(self) -> bool:
+        return self.role == Roles.LIBRARIAN
+
+    @property
+    def is_user(self) -> bool:
+        return self.role == Roles.USER
+
+    @property
+    def is_vip(self) -> bool:
+        return self.role == Roles.VIP
+
     def __str__(self):
         return self.username
 
@@ -135,7 +158,6 @@ class ActivationToken(models.Model):
     expires_at = models.DateTimeField(
         "Истекает",
     )
-
     objects = ActivationTokenManager()
 
     class Meta:
