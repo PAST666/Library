@@ -1,5 +1,6 @@
 import uuid
 
+from datetime import date
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q
@@ -71,6 +72,9 @@ class User(AbstractUser):
         blank=True
 
     )
+    birth_date = models.DateField(
+        "Дата рождения",
+    )
     country = models.ForeignKey(
         Country,
         on_delete=models.SET_NULL,
@@ -95,7 +99,16 @@ class User(AbstractUser):
         ordering = ("username",)
 
     @property
-    def full_name(self):
+    def age(self) -> int | None:
+        if self.birth_date:
+            today = date.today()
+            return today.year - self.birth_date.year - (
+                (today.month, today.day) < (self.birth_date.month, self.birth_date.day)
+            )
+        return None
+
+    @property
+    def full_name(self) -> str:
         return f"{self.last_name} {self.first_name}"
 
     def __str__(self):
@@ -135,7 +148,7 @@ class ActivationToken(models.Model):
         ]
 
     @property
-    def is_valid(self):
+    def is_valid(self) -> bool:
         return self.expires_at > timezone.now()
 
     def __str__(self) -> str:
