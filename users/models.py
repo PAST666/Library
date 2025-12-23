@@ -64,13 +64,6 @@ class User(AbstractUser):
         null=True,
         blank=True
     )
-    age = models.CharField(
-        "Возраст",
-        max_length=MAX_CODE_LENGTH,
-        null=True,
-        blank=True
-
-    )
     birth_date = models.DateField(
         "Дата рождения",
     )
