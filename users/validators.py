@@ -11,7 +11,7 @@ class KirillicLettersValidator(RegexValidator):
 
 
 class EmailValidator(RegexValidator):
-    code = "invalid_name"
+    code = "invalid_user_email"
     message = _(
         "Почта должна быть следующих сервисов: gmail.com, yandex.ru, ya.ru, mail.ru, yahoo.com, outlook.com"
     )
@@ -19,7 +19,7 @@ class EmailValidator(RegexValidator):
 
 
 class PhoneNumberValidator(RegexValidator):
-    code = "invalid_name"
+    code = "invalid_user_phone_number"
     message = _(
         "Номер телефона начинается с +7 или 8, далее - код оператора 3 цифры (9XX), его допускается брать в скобки, "
         "далее - 7 цифр группами: 3 цифры, 2 цифры, 2 цифры, слитно или с использованием дефисов и/или пробелов. "
