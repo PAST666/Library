@@ -7,6 +7,8 @@ from .constants import (
     Genre
 )
 
+from .managers import BookManager
+
 from users.models import User
 
 
@@ -36,6 +38,7 @@ class Book(models.Model):
     )
     is_taken: bool = models.BooleanField("Выдана", default=False)
     is_over_18_years: bool = models.BooleanField("Для взрослых", default=False)
+    objects = BookManager()
 
     class Meta:
         verbose_name = "Книга"
