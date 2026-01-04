@@ -36,3 +36,14 @@ class BookManager(models.Manager):
             queryset = queryset.filter(pages=pages)
         return queryset
 
+    def take_book(self, book_id):
+        book = get_object_or_404(self.model, id=book_id)
+        book.is_taken = True
+        book.save()
+        return book
+
+    def return_book(self, book_id):
+        book = get_object_or_404(self.model, id=book_id)
+        book.is_taken = False
+        book.save()
+        return book
