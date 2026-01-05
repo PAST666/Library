@@ -4,6 +4,7 @@ from .constants import (
     MAX_NAME_LENGTH,
     MAX_PAGES_COUNT_LENGTH,
     MAX_PUBLICATION_YEAR_LENGTH,
+    MAX_NUMBER_ISBN,
     Genre
 )
 
@@ -34,7 +35,10 @@ class Book(models.Model):
         "Жанр",
         choices=Genre.choices,
         max_length=MAX_NAME_LENGTH
-
+    )
+    isbn: str = models.CharField(
+        "ISBN",
+        max_length=MAX_NUMBER_ISBN
     )
     is_taken: bool = models.BooleanField("Выдана", default=False)
     is_over_18_years: bool = models.BooleanField("Для взрослых", default=False)

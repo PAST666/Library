@@ -1,5 +1,6 @@
 from django.db import models
 from django.shortcuts import get_object_or_404
+from .constants import MAX_NUMBER_ISBN
 
 
 class BookManager(models.Manager):
@@ -49,3 +50,11 @@ class BookManager(models.Manager):
             if books_updated == 0:
                 raise ValueError("Книга уже взята или не существует.")
         return self.model.objects.get(id=book_id)
+
+    def clean_isbn(self):
+        if not self.isbn:
+            return ""
+        isbn = self.replace(" ", "").replace("-", "").removeprefix("ISBN")
+        if len(isbn) != MAX_NUMBER_ISBN:
+            raise ValueError("Количество цифр в номере ISBN некорректное.")
+        return isbn
