@@ -54,7 +54,7 @@ class BookManager(models.Manager):
     def clean_isbn(self):
         if not self.isbn:
             return ""
-        isbn = self.replace(" ", "").replace("-", "").removeprefix("ISBN")
-        if len(isbn) != MAX_NUMBER_ISBN:
+        clean_number = self.replace(" ", "").replace("-", "").removeprefix("ISBN")
+        if len(clean_number) != MAX_NUMBER_ISBN:
             raise ValueError("Количество цифр в номере ISBN некорректное.")
-        return isbn
+        return clean_number
