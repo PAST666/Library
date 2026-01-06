@@ -43,6 +43,7 @@ class Book(models.Model):
         max_length=MAX_NUMBER_ISBN
     )
     age_rating: str = models.CharField(
+        "Возрастной рейтинг",
         choices=AgeRating.choices,
         max_length=MAX_AGE_RATING_LENGTH
     )
