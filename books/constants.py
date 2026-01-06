@@ -22,4 +22,3 @@ class AgeRating(models.TextChoices):
     ABOVE_TWELVE = ("ABOVE_TWELVE", "12+")
     ABOVE_SIXTEEN = ("ABOVE_SIXTEEN", "16+")
     ABOVE_EIGHTEEN = ("ABOVE_EIGHTEEN", "18+")
-
