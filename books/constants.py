@@ -4,7 +4,7 @@ MAX_NAME_LENGTH: int = 150
 MAX_PAGES_COUNT_LENGTH: int = 4
 MAX_PUBLICATION_YEAR_LENGTH: int = 4
 MAX_NUMBER_ISBN: int = 13
-MAX_AGE_RATING_LENGTH: int = 2
+MAX_AGE_RATING_LENGTH: int = 3
 
 
 class Genre(models.TextChoices):
