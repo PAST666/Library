@@ -5,7 +5,9 @@ from .constants import (
     MAX_PAGES_COUNT_LENGTH,
     MAX_PUBLICATION_YEAR_LENGTH,
     MAX_NUMBER_ISBN,
-    Genre
+    MAX_AGE_RATING_LENGTH,
+    Genre,
+    AgeRating
 )
 
 from .managers import BookManager
@@ -40,8 +42,11 @@ class Book(models.Model):
         "ISBN",
         max_length=MAX_NUMBER_ISBN
     )
+    age_rating: str = models.CharField(
+        choices=AgeRating.choices,
+        max_length=MAX_AGE_RATING_LENGTH
+    )
     is_taken: bool = models.BooleanField("Выдана", default=False)
-    is_over_18_years: bool = models.BooleanField("Для взрослых", default=False)
     objects = BookManager()
 
     class Meta:
