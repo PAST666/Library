@@ -34,6 +34,7 @@ class Book(models.Model):
     title: str = models.CharField(
         "Книга",
         max_length=MAX_NAME_LENGTH,
+        db_index=True
     )
     pages: int = models.PositiveSmallIntegerField(
         "Количество страниц",
@@ -46,7 +47,9 @@ class Book(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.SET_NULL,
+        null=True,
         verbose_name="Пользователь",
+        related_name="books",
         db_index=True
     )
     genre: str = models.ManyToManyField(
