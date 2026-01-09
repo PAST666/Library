@@ -7,7 +7,9 @@ from .constants import (
     MAX_NAME_LENGTH,
     MAX_NUMBER_ISBN,
     MAX_AGE_RATING_LENGTH,
-    AgeRating
+    MAX_STATUS_LENGTH,
+    AgeRating,
+    Status
 )
 
 from .managers import BookManager
@@ -66,11 +68,6 @@ class Book(models.Model):
         choices=AgeRating.choices,
         max_length=MAX_AGE_RATING_LENGTH
     )
-    is_taken: bool = models.BooleanField(
-        "Выдана",
-        db_index=True,
-        default=False,
-    )
     objects = BookManager()
 
     class Meta:
@@ -106,3 +103,27 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class BookInventory(models.Model):
+    book: str = models.ForeignKey(
+        Book,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="book_inventory",
+        db_index=True
+    )
+    status: str = models.CharField(
+        "Статус",
+        choices=Status.choices,
+        max_length=MAX_STATUS_LENGTH
+    )
+
+    class Meta:
+        verbose_name = "Перечень книг"
+        verbose_name_plural = "Перечни книг"
+        ordering = ("status",)
+
+    def __str__(self):
+        return self.book
+
