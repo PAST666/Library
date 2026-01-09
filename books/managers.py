@@ -1,27 +1,8 @@
 from django.db import models
-from django.shortcuts import get_object_or_404
-from .constants import MAX_NUMBER_ISBN
+
 
 
 class BookManager(models.Manager):
-    def create_book(self, user, **kwargs):
-        return self.create(user=user, **kwargs)
-
-    def update_book(self, book_id, new_title=None, new_pages=None, new_publication_year=None):
-        book = get_object_or_404(self.model, id=book_id)
-        if new_title:
-            book.title = new_title
-        if new_pages is not None:
-            book.pages = new_pages
-        if new_publication_year is not None:
-            book.publication_year = new_publication_year
-        book.save()
-        return book
-
-    def delete_book(self, book_id):
-        book = get_object_or_404(self.model, id=book_id)
-        book.delete()
-
     def get_all_books_list(self) -> list:
         return self.all()
 
@@ -50,11 +31,3 @@ class BookManager(models.Manager):
             if books_updated == 0:
                 raise ValueError("Книга уже взята или не существует.")
         return self.model.objects.get(id=book_id)
-
-    def clean_isbn(self):
-        if not self.isbn:
-            return ""
-        clean_number = self.replace(" ", "").replace("-", "").removeprefix("ISBN")
-        if len(clean_number) != MAX_NUMBER_ISBN:
-            raise ValueError("Количество цифр в номере ISBN некорректное.")
-        return clean_number
