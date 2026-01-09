@@ -5,17 +5,29 @@ from django.shortcuts import get_object_or_404
 
 from .constants import (
     MAX_NAME_LENGTH,
-    MAX_PAGES_COUNT_LENGTH,
-    MAX_PUBLICATION_YEAR_LENGTH,
     MAX_NUMBER_ISBN,
     MAX_AGE_RATING_LENGTH,
-    Genre,
     AgeRating
 )
 
 from .managers import BookManager
 
 from users.models import User
+
+
+class Genre(models.Model):
+    name: str = models.CharField(
+        "Жанр",
+        max_length=MAX_NAME_LENGTH,
+        db_index=True
+    )
+
+    class Meta:
+        verbose_name = "Жанр"
+        verbose_name_plural = "Жанры"
+
+    def __str__(self):
+        return self.name
 
 
 class Book(models.Model):
@@ -37,10 +49,9 @@ class Book(models.Model):
         verbose_name="Пользователь",
         db_index=True
     )
-    genre: str = models.CharField(
-        "Жанр",
-        choices=Genre.choices,
-        max_length=MAX_NAME_LENGTH
+    genre: str = models.ManyToManyField(
+        Genre,
+        related_name="books"
     )
     isbn: str = models.CharField(
         "ISBN",
@@ -55,7 +66,7 @@ class Book(models.Model):
     is_taken: bool = models.BooleanField(
         "Выдана",
         db_index=True,
-        default=False
+        default=False,
     )
     objects = BookManager()
 
