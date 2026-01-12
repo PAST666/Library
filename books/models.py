@@ -100,6 +100,18 @@ class Book(models.Model):
             raise ValueError("Количество цифр в номере ISBN некорректное.")
         return clean_number
 
+    @property
+    def is_for_child(self) -> bool:
+        return self.age_rating == "ABOVE_ZERO" or "ABOVE_SIX"
+
+    @property
+    def is_for_teenager(self) -> bool:
+        return self.age_rating == "ABOVE_TWELVE" or "ABOVE_SIXTEEN"
+
+    @property
+    def is_for_adult(self) -> bool:
+        return self.age_rating == "ABOVE_EIGHTEEN"
+
     def __str__(self):
         return self.title
 
