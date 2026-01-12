@@ -2,7 +2,6 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.shortcuts import get_object_or_404
 
-
 from .constants import (
     MAX_NAME_LENGTH,
     MAX_NUMBER_ISBN,
@@ -126,4 +125,3 @@ class BookInventory(models.Model):
 
     def __str__(self):
         return self.book
-
