@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.shortcuts import get_object_or_404
+from isbn_field import ISBNField
 
 from .constants import (
     MAX_NAME_LENGTH,
@@ -57,7 +58,7 @@ class Book(models.Model):
         Genre,
         related_name="books"
     )
-    isbn: str = models.CharField(
+    isbn: str = ISBNField(
         "ISBN",
         max_length=MAX_NUMBER_ISBN,
         unique=True
