@@ -17,21 +17,6 @@ from .managers import BookManager
 from users.models import User
 
 
-class Genre(models.Model):
-    name: str = models.CharField(
-        "Жанр",
-        max_length=MAX_NAME_LENGTH,
-        db_index=True
-    )
-
-    class Meta:
-        verbose_name = "Жанр"
-        verbose_name_plural = "Жанры"
-
-    def __str__(self):
-        return self.name
-
-
 class Book(models.Model):
     title: str = models.CharField(
         "Книга",
@@ -115,6 +100,26 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Genre(models.Model):
+    name: str = models.CharField(
+        "Жанр",
+        max_length=MAX_NAME_LENGTH,
+        db_index=True
+    )
+
+    book: str = models.ManyToManyField(
+        Book,
+        related_name="genres"
+    )
+
+    class Meta:
+        verbose_name = "Жанр"
+        verbose_name_plural = "Жанры"
+
+    def __str__(self):
+        return self.name
 
 
 class BookInventory(models.Model):
