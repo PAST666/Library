@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.shortcuts import get_object_or_404
 from isbn_field import ISBNField
+from users.models import User
 
 from .constants import (
     MAX_NAME_LENGTH,
@@ -14,7 +15,36 @@ from .constants import (
 
 from .managers import BookManager
 
-from users.models import User
+
+class Author(models.Model):
+    name: str = models.CharField(
+        "Автор",
+        db_index=True
+    )
+
+    class Meta:
+        verbose_name = "Автор"
+        verbose_name_plural = "Авторы"
+        ordering = ("name",)
+
+    def __str__(self):
+        return self.name
+
+
+class Genre(models.Model):
+    name: str = models.CharField(
+        "Жанр",
+        max_length=MAX_NAME_LENGTH,
+        db_index=True
+    )
+
+    class Meta:
+        verbose_name = "Жанр"
+        verbose_name_plural = "Жанры"
+        ordering = ("name",)
+
+    def __str__(self):
+        return self.name
 
 
 class Book(models.Model):
@@ -31,13 +61,17 @@ class Book(models.Model):
         "Дата издания",
         db_index=True
     )
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
         null=True,
         verbose_name="Пользователь",
         related_name="books",
         db_index=True
+    )
+    author: str = models.ManyToManyField(
+        Author,
+        related_name="authors"
     )
     genre: str = models.ManyToManyField(
         Genre,
@@ -100,26 +134,6 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class Genre(models.Model):
-    name: str = models.CharField(
-        "Жанр",
-        max_length=MAX_NAME_LENGTH,
-        db_index=True
-    )
-
-    book: str = models.ManyToManyField(
-        Book,
-        related_name="genres"
-    )
-
-    class Meta:
-        verbose_name = "Жанр"
-        verbose_name_plural = "Жанры"
-
-    def __str__(self):
-        return self.name
 
 
 class BookInventory(models.Model):
