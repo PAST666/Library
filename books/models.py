@@ -99,14 +99,11 @@ class Book(models.Model):
         return cls.objects.create(user=user, **kwargs)
 
     @classmethod
-    def update_book(cls, book_id, new_title=None, new_pages=None, new_publication_date=None):
+    def update_book(cls, book_id, **kwargs):
         book = get_object_or_404(cls, id=book_id)
-        if new_title:
-            book.title = new_title
-        if new_pages is not None:
-            book.pages = new_pages
-        if new_publication_date is not None:
-            book.publication_date = new_publication_date
+        for field, value in kwargs.items():
+            if hasattr(book, field):
+                setattr(book, field, value)
         book.save()
         return book
 
