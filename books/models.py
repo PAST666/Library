@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import UniqueConstraint
 from django.core.validators import MinValueValidator
 from django.shortcuts import get_object_or_404
 from isbn_field import ISBNField
@@ -93,6 +94,9 @@ class Book(models.Model):
         verbose_name = "Книга"
         verbose_name_plural = "Книги"
         ordering = ("title",)
+        constraints = [
+            UniqueConstraint(fields=["title", "publication_date", "isbn"], name="unique_fields")
+        ]
 
     @classmethod
     def create_book(cls, user, **kwargs):
@@ -116,7 +120,7 @@ class Book(models.Model):
     def clean_isbn(self):
         if not self.isbn:
             return ""
-        clean_number = self.replace(" ", "").replace("-", "").removeprefix("ISBN")
+        clean_number = self.isbn.replace(" ", "").replace("-", "").removeprefix("ISBN")
         if len(clean_number) != MAX_NUMBER_ISBN:
             raise ValueError("Количество цифр в номере ISBN некорректное.")
         return clean_number
