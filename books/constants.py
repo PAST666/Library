@@ -2,7 +2,7 @@ from django.db import models
 
 MAX_NAME_LENGTH: int = 150
 MAX_NUMBER_ISBN: int = 13
-MAX_AGE_RATING_LENGTH: int = 3
+MAX_AGE_RATING_LENGTH: int = 14
 MAX_STATUS_LENGTH: int = 9
 
 
