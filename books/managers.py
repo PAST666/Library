@@ -2,7 +2,7 @@ from django.db import models
 
 
 class BookManager(models.Manager):
-    def get_all_books_list(self) -> list:
+    def get_all_books_list(self) -> models.QuerySet:
         return self.all()
 
     def search_books(self, title=None, genre=None, publication_year=None, pages=None):
