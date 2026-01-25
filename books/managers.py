@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.db import models
 
 
@@ -5,14 +7,22 @@ class BookManager(models.Manager):
     def get_all_books_list(self) -> models.QuerySet:
         return self.all()
 
-    def search_books(self, title=None, genre=None, publication_year=None, pages=None):
+    def search_books(self, **kwargs) -> models.QuerySet:
+        valid_filters: dict[str, str] = {
+            "title": "title__icontains",
+            "genre": "genre",
+            "publication_year" : "publication_year",
+            "pages": "pages"
+        }
+
+        filters: dict[str, Any] = {}
+        for field, value in kwargs.items():
+            if valid_filters.get(field) is None:
+                continue
+            if value is not None:
+                filters[valid_filters[field]] = value
         queryset = self.all()
-        if title:
-            queryset = queryset.filter(title__icontains=title)
-        if genre:
-            queryset = queryset.filter(genre=genre)
-        if publication_year:
-            queryset = queryset.filter(publication_year=publication_year)
-        if pages:
-            queryset = queryset.filter(pages=pages)
+        if filters:
+            queryset = queryset.filter(**filters)
+
         return queryset
