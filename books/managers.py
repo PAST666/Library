@@ -45,3 +45,11 @@ class BookManager(models.Manager):
                 filter=Q(book_inventory__status=Status.BUSY)
             )
         ).filter(busy_count__gt=0)
+
+    def reserved(self) -> models.QuerySet:
+        return self.annotate(
+            reserved_count=Count(
+                "book_inventory",
+                filter=Q(book_inventory__status=Status.RESERVED)
+            )
+        ).filter(reserved_count__gt=0)
