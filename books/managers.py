@@ -53,3 +53,6 @@ class BookManager(models.Manager):
                 filter=Q(book_inventory__status=Status.RESERVED)
             )
         ).filter(reserved_count__gt=0)
+
+    def by_genre(self, genre: str) -> models.QuerySet:
+        return self.filter(genre=genre)
