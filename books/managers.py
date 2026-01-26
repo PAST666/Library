@@ -1,6 +1,9 @@
 from typing import Any
 
 from django.db import models
+from django.db.models import Count, Q
+
+from .constants import Status
 
 
 class BookManager(models.Manager):
@@ -26,3 +29,11 @@ class BookManager(models.Manager):
             queryset = queryset.filter(**filters)
 
         return queryset
+
+    def available(self) -> models.QuerySet:
+        return self.annotate(
+            available_count=Count(
+                "book_inventory",
+                filter=Q(book_inventory__status=Status.AVAILABLE)
+            )
+        ).filter(available_count__gt=0)
