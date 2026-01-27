@@ -73,9 +73,10 @@ class Book(models.Model):
         related_name="books",
         db_index=True
     )
-    author: str = models.ManyToManyField(
+    author = models.ManyToManyField(
         Author,
-        related_name="authors"
+        verbose_name="Автор",
+        related_name="books"
     )
     genre: str = models.ManyToManyField(
         Genre,
