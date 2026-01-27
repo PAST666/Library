@@ -36,13 +36,17 @@ class Genre(models.Model):
     name: str = models.CharField(
         "Жанр",
         max_length=MAX_NAME_LENGTH,
-        db_index=True
+        db_index=True,
+        unique=True
     )
 
     class Meta:
         verbose_name = "Жанр"
         verbose_name_plural = "Жанры"
         ordering = ("name",)
+
+    def clean(self) -> str:
+        return self.name.lower()
 
     def __str__(self):
         return self.name
