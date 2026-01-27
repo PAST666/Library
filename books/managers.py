@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any
 
 from django.db import models
@@ -56,3 +57,6 @@ class BookManager(models.Manager):
 
     def by_genre(self, genre: str) -> models.QuerySet:
         return self.filter(genre=genre)
+
+    def recent(self, years: int = 5) -> models.QuerySet:
+        return self.filter(publication_date__gte=datetime.now().year - years)
