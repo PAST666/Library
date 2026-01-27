@@ -78,8 +78,9 @@ class Book(models.Model):
         verbose_name="Автор",
         related_name="books"
     )
-    genre: str = models.ManyToManyField(
+    genre = models.ManyToManyField(
         Genre,
+        verbose_name="Жанр",
         related_name="books"
     )
     isbn: str = ISBNField(
@@ -146,10 +147,11 @@ class Book(models.Model):
 
 
 class BookInventory(models.Model):
-    book: str = models.ForeignKey(
+    book = models.ForeignKey(
         Book,
         on_delete=models.SET_NULL,
         null=True,
+        verbose_name="Книга",
         related_name="book_inventory",
         db_index=True
     )
