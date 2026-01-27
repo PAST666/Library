@@ -63,8 +63,7 @@ class Book(models.Model):
         validators=[MinValueValidator(1)]
     )
     publication_date: int = models.DateField(
-        "Дата издания",
-        db_index=True
+        "Дата издания"
     )
     user = models.ForeignKey(
         User,
