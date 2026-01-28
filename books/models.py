@@ -121,15 +121,6 @@ class Book(models.Model):
         book = get_object_or_404(cls, id=book_id)
         book.delete()
 
-    @classmethod
-    def clean_isbn(cls, isbn):
-        if not isbn:
-            return ""
-        clean_number = isbn.replace(" ", "").replace("-", "").removeprefix("ISBN")
-        if len(clean_number) != MAX_NUMBER_ISBN:
-            raise ValueError("Количество цифр в номере ISBN некорректное.")
-        return clean_number
-
     @property
     def is_for_child(self) -> bool:
         return self.age_rating == "ABOVE_ZERO" or "ABOVE_SIX"
