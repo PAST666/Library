@@ -121,11 +121,11 @@ class Book(models.Model):
         book = get_object_or_404(cls, id=book_id)
         book.delete()
 
-    @property
-    def clean_isbn(self):
-        if not self.isbn:
+    @classmethod
+    def clean_isbn(cls, isbn):
+        if not isbn:
             return ""
-        clean_number = self.isbn.replace(" ", "").replace("-", "").removeprefix("ISBN")
+        clean_number = isbn.replace(" ", "").replace("-", "").removeprefix("ISBN")
         if len(clean_number) != MAX_NUMBER_ISBN:
             raise ValueError("Количество цифр в номере ISBN некорректное.")
         return clean_number
