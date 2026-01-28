@@ -123,11 +123,11 @@ class Book(models.Model):
 
     @property
     def is_for_child(self) -> bool:
-        return self.age_rating == "ABOVE_ZERO" or "ABOVE_SIX"
+        return self.age_rating in ["ABOVE_ZERO", "ABOVE_SIX"]
 
     @property
     def is_for_teenager(self) -> bool:
-        return self.age_rating == "ABOVE_TWELVE" or "ABOVE_SIXTEEN"
+        return self.age_rating in ["ABOVE_TWELVE", "ABOVE_SIXTEEN"]
 
     @property
     def is_for_adult(self) -> bool:
