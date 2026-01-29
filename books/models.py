@@ -99,9 +99,6 @@ class Book(models.Model):
         verbose_name = "Книга"
         verbose_name_plural = "Книги"
         ordering = ("title",)
-        constraints = [
-            UniqueConstraint(fields=["title", "publication_date", "isbn"], name="unique_fields")
-        ]
 
     @classmethod
     def create_book(cls, user, **kwargs):
