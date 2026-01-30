@@ -1,5 +1,6 @@
+from authors.models import Author
+
 from django.db import models
-from django.db.models import UniqueConstraint
 from django.core.validators import MinValueValidator
 from django.shortcuts import get_object_or_404
 from isbn_field import ISBNField
@@ -15,21 +16,6 @@ from .constants import (
 )
 
 from .managers import BookManager
-
-
-class Author(models.Model):
-    name: str = models.CharField(
-        "Автор",
-        db_index=True
-    )
-
-    class Meta:
-        verbose_name = "Автор"
-        verbose_name_plural = "Авторы"
-        ordering = ("name",)
-
-    def __str__(self):
-        return self.name
 
 
 class Genre(models.Model):
@@ -74,7 +60,7 @@ class Book(models.Model):
         db_index=True
     )
     author = models.ManyToManyField(
-        Author,
+        "Author",
         verbose_name="Автор",
         related_name="books"
     )
@@ -104,9 +90,8 @@ class Book(models.Model):
     def create_book(cls, user, **kwargs):
         return cls.objects.create(user=user, **kwargs)
 
-    @classmethod
-    def update_book(cls, book_id, **kwargs):
-        book = get_object_or_404(cls, id=book_id)
+    def update(self, book_id, **kwargs):
+        book = get_object_or_404(self, id=book_id)
         for field, value in kwargs.items():
             if hasattr(book, field):
                 setattr(book, field, value)
@@ -155,4 +140,4 @@ class BookInventory(models.Model):
         ordering = ("status",)
 
     def __str__(self):
-        return self.book
+        return f"{self.book.title[:15]} | {self.book.isbn} -> {self.status}"
