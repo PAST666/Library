@@ -103,9 +103,8 @@ class Book(models.Model):
         book.save()
         return book
 
-    @classmethod
-    def delete_book(cls, book_id):
-        book = get_object_or_404(cls, id=book_id)
+    def delete_book(self, book_id):
+        book = get_object_or_404(Book, id=book_id)
         book.delete()
 
     @property
