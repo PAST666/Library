@@ -86,27 +86,6 @@ class Book(models.Model):
         verbose_name_plural = "Книги"
         ordering = ("title",)
 
-    def create(self, **kwargs):
-        required_fields = ["title", "pages", "publication_date", "isbn", "age_rating"]
-        for field in required_fields:
-            if field not in kwargs:
-                raise ValueError(f"Требуется заполнить поле {field}")
-        new_book = Book(**kwargs)
-        new_book.save()
-        return new_book
-
-    def update(self, book_id, **kwargs):
-        book = get_object_or_404(self, id=book_id)
-        for field, value in kwargs.items():
-            if hasattr(book, field):
-                setattr(book, field, value)
-        book.save()
-        return book
-
-    def delete_book(self, book_id):
-        book = get_object_or_404(Book, id=book_id)
-        book.delete()
-
     @property
     def is_for_child(self) -> bool:
         return self.age_rating in ["ABOVE_ZERO", "ABOVE_SIX"]
