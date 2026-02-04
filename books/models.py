@@ -31,8 +31,9 @@ class Genre(models.Model):
         verbose_name_plural = "Жанры"
         ordering = ("name",)
 
-    def clean(self) -> str:
-        return self.name.lower()
+    def save(self, *args, **kwargs) -> None:
+        self.name = self.name.lower()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
