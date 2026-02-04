@@ -49,7 +49,7 @@ class Book(models.Model):
         "Количество страниц",
         validators=[MinValueValidator(1)]
     )
-    publication_date: int = models.DateField(
+    publication_date = models.DateField(
         "Дата издания"
     )
     user = models.ForeignKey(
