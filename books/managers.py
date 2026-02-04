@@ -31,29 +31,22 @@ class BookManager(models.Manager):
 
         return queryset
 
-    def available(self) -> models.QuerySet:
+    def _annotate_by(self, status) -> models.QuerySet:
         return self.annotate(
-            available_count=Count(
+            status_count=Count(
                 "book_inventory",
-                filter=Q(book_inventory__status=Status.AVAILABLE)
+                filter=Q(book_inventory__status=status)
             )
-        ).filter(available_count__gt=0)
+        ).filter(status_count__gt=0)
 
-    def busy(self) -> models.QuerySet:
-        return self.annotate(
-            busy_count=Count(
-                "book_inventory",
-                filter=Q(book_inventory__status=Status.BUSY)
-            )
-        ).filter(busy_count__gt=0)
+    def available(self):
+        return self._annotate_by(Status.AVAILABLE)
 
-    def reserved(self) -> models.QuerySet:
-        return self.annotate(
-            reserved_count=Count(
-                "book_inventory",
-                filter=Q(book_inventory__status=Status.RESERVED)
-            )
-        ).filter(reserved_count__gt=0)
+    def busy(self):
+        return self._annotate_by(Status.BUSY)
+
+    def reserved(self):
+        return self._annotate_by(Status.RESERVED)
 
     def by_genre(self, genre: str) -> models.QuerySet:
         return self.filter(genre=genre)
