@@ -1,5 +1,3 @@
-from authors.models import Author
-
 from django.db import models
 from django.core.validators import MinValueValidator
 from isbn_field import ISBNField
