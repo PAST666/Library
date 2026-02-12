@@ -21,6 +21,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
+    'books',
+    'isbn_field',
 ]
 
 MIDDLEWARE = [
