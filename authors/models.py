@@ -11,6 +11,16 @@ class Author(models.Model):
         db_index=True,
         verbose_name="Автор"
     )
+    birth_date = models.DateField(
+        "Дата рождения"
+    )
+    nationality: str = models.CharField(
+        "Национальность",
+        max_length=MAX_NAME_LENGTH,
+        null=True,
+        blank=True,
+        verbose_name="Национальность"
+    )
 
     class Meta:
         verbose_name = "Автор"
