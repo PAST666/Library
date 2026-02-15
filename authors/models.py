@@ -2,6 +2,7 @@ from django.db import models
 from books.models import Genre
 
 from .constants import MAX_NAME_LENGTH
+from .validators import KirillicLettersValidator
 
 
 
@@ -9,6 +10,7 @@ class Author(models.Model):
     name: str = models.CharField(
         "Автор",
         max_length=MAX_NAME_LENGTH,
+        validators=[KirillicLettersValidator()],
         unique=True,
         db_index=True,
         verbose_name="Автор"
