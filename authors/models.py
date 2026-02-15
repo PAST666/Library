@@ -27,5 +27,9 @@ class Author(models.Model):
         verbose_name_plural = "Авторы"
         ordering = ("name",)
 
+    def save(self, *args, **kwargs) -> None:
+        self.name = self.name.lower()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
