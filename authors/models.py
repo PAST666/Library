@@ -5,15 +5,20 @@ from .constants import MAX_NAME_LENGTH
 from .validators import KirillicLettersValidator
 
 
-
 class Author(models.Model):
-    name: str = models.CharField(
-        "Автор",
+    first_name: str = models.CharField(
+        "Имя",
+        max_length=MAX_NAME_LENGTH,
+        validators=[KirillicLettersValidator()],
+        verbose_name="Имя"
+    )
+    last_name: str = models.CharField(
+        "Фамилия",
         max_length=MAX_NAME_LENGTH,
         validators=[KirillicLettersValidator()],
         unique=True,
         db_index=True,
-        verbose_name="Автор"
+        verbose_name="Фамилия"
     )
     birth_date = models.DateField(
         "Дата рождения"
@@ -37,8 +42,9 @@ class Author(models.Model):
         ordering = ("name",)
 
     def save(self, *args, **kwargs) -> None:
-        self.name = self.name.lower()
+        self.first_name = self.first_name.lower()
+        self.last_name = self.last_name.lower()
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
+        return f"{self.first_name} {self.last_name}"
