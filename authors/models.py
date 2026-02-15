@@ -1,5 +1,5 @@
 from django.db import models
-from books.models import Genre
+from books.models import Genre, Book
 
 from .constants import MAX_NAME_LENGTH
 from .validators import KirillicLettersValidator
@@ -34,6 +34,11 @@ class Author(models.Model):
         Genre,
         verbose_name="Жанр",
         related_name="books"
+    )
+    book: str = models.ManyToManyField(
+        Book,
+        verbose_name="Книга",
+        related_name="book"
     )
 
     class Meta:

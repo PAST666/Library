@@ -7,3 +7,6 @@ class AuthorManager(models.Manager):
 
     def by_genre(self, genre: str) -> models.QuerySet:
         return self.filter(genre=genre)
+
+    def book_count(self):
+        return self.book.count()
