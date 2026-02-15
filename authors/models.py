@@ -1,6 +1,8 @@
 from django.db import models
+from books.models import Genre
 
 from .constants import MAX_NAME_LENGTH
+
 
 
 class Author(models.Model):
@@ -20,6 +22,11 @@ class Author(models.Model):
         null=True,
         blank=True,
         verbose_name="Национальность"
+    )
+    genre: str = models.ManyToManyField(
+        Genre,
+        verbose_name="Жанр",
+        related_name="books"
     )
 
     class Meta:
