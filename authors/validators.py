@@ -7,4 +7,4 @@ class KirillicLettersValidator(RegexValidator):
     message = _(
         "Имя должно содержать только буквы кириллического алфавита"
     )
-    regex = r"^[а-яА-ЯёЁ]"
+    regex = r"^[а-яА-ЯёЁ]+$"
