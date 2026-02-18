@@ -33,22 +33,26 @@ class Author(models.Model):
     genre: str = models.ManyToManyField(
         Genre,
         verbose_name="Жанр",
-        related_name="books"
+        related_name="authors"
     )
     book: str = models.ManyToManyField(
         Book,
         verbose_name="Книга",
-        related_name="book"
+        related_name="authors"
     )
 
     class Meta:
         verbose_name = "Автор"
         verbose_name_plural = "Авторы"
-        ordering = ("name",)
+        ordering = ("last_name", "first_name")
+
+    @property
+    def books_count(self) -> int:
+        return self.book.count()
 
     def save(self, *args, **kwargs) -> None:
-        self.first_name = self.first_name.lower()
-        self.last_name = self.last_name.lower()
+        self.first_name = self.first_name.capitalize()
+        self.last_name = self.last_name.capitalize()
         super().save(*args, **kwargs)
 
     def __str__(self):
