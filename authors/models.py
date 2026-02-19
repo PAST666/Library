@@ -20,13 +20,11 @@ class Nationality(models.Model):
 
 class Author(models.Model):
     first_name: str = models.CharField(
-        "Имя",
         max_length=MAX_NAME_LENGTH,
         validators=[KirillicLettersValidator()],
         verbose_name="Имя"
     )
     last_name: str = models.CharField(
-        "Фамилия",
         max_length=MAX_NAME_LENGTH,
         validators=[KirillicLettersValidator()],
         unique=True,
