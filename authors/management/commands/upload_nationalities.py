@@ -2,7 +2,7 @@ import json
 import os
 
 from django.core.management.base import BaseCommand
-from authors.models import Author
+from authors.models import Author, Nationality
 
 
 class Command(BaseCommand):
@@ -45,5 +45,5 @@ class Command(BaseCommand):
     def upload_nationalities_from_json(self, filepath: str) -> None:
         with open(filepath, "r", encoding="utf-8") as f:
             nationalities_data = json.load(f)
-        nationalities = [Author(nationality=nationality["nationality"], code=nationality["code"]) for nationality in nationalities_data]
-        Author.objects.bulk_create(nationalities)
+        nationalities = [Nationality(nationality=nationality["nationality"], code=nationality["code"]) for nationality in nationalities_data]
+        Nationality.objects.bulk_create(nationalities)
