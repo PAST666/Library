@@ -46,4 +46,10 @@ class Command(BaseCommand):
         with open(filepath, "r", encoding="utf-8") as f:
             nationalities_data = json.load(f)
         nationalities = [Nationality(nationality=nationality["nationality"], code=nationality["code"]) for nationality in nationalities_data]
-        Nationality.objects.bulk_create(nationalities, ignore_conflicts=True)
+        created_nationalities = Nationality.objects.bulk_create(nationalities, ignore_conflicts=True)
+        count_new_records = len(created_nationalities)
+        if count_new_records:
+            print(f"Добавлено {count_new_records} национальностей")
+        else:
+            print("Новых национальностей не добавлено")
+
