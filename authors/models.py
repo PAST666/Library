@@ -27,7 +27,6 @@ class Author(models.Model):
     last_name: str = models.CharField(
         max_length=MAX_NAME_LENGTH,
         validators=[KirillicLettersValidator()],
-        unique=True,
         db_index=True,
         verbose_name="Фамилия"
     )
