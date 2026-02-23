@@ -64,8 +64,8 @@ class Author(models.Model):
         return Author.objects.annotate(books_count=Count("books"))
 
     def save(self, *args, **kwargs) -> None:
-        self.first_name = self.first_name.capitalize()
-        self.last_name = self.last_name.capitalize()
+        self.first_name = self.first_name.lower()
+        self.last_name = self.last_name.lower()
         super().save(*args, **kwargs)
 
     def __str__(self):
