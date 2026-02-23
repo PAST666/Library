@@ -44,10 +44,11 @@ class Command(BaseCommand):
 
     def upload_nationalities_from_json(self, filepath: str) -> None:
         with open(filepath, "r", encoding="utf-8") as f:
-            nationalities_data = json.load(f)
-        nationalities = [Nationality(nationality=nationality["nationality"], code=nationality["code"]) for nationality in nationalities_data]
-        created_nationalities = Nationality.objects.bulk_create(nationalities, ignore_conflicts=True)
-        count_new_records = len(created_nationalities)
+            data = json.load(f)
+        nationalities = [Nationality(nationality=n["nationality"], code=n["code"]) for n in data]
+        initial_count = Nationality.objects.count()
+        Nationality.objects.bulk_create(nationalities, ignore_conflicts=True)
+        count_new_records = Nationality.objects.count() - initial_count
         if count_new_records:
             print(f"Добавлено {count_new_records} национальностей")
         else:
