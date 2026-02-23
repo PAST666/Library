@@ -46,4 +46,4 @@ class Command(BaseCommand):
         with open(filepath, "r", encoding="utf-8") as f:
             nationalities_data = json.load(f)
         nationalities = [Nationality(nationality=nationality["nationality"], code=nationality["code"]) for nationality in nationalities_data]
-        Nationality.objects.bulk_create(nationalities)
+        Nationality.objects.bulk_create(nationalities, ignore_conflicts=True)
