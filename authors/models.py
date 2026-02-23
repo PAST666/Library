@@ -37,7 +37,6 @@ class Author(models.Model):
     )
     nationality = models.ForeignKey(
         Nationality,
-        max_length=MAX_NAME_LENGTH,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
