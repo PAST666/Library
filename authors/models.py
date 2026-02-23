@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import Count
+
 from books.models import Genre, Book
 
 from .constants import MAX_NAME_LENGTH, MAX_CODE_LENGTH
@@ -59,7 +61,7 @@ class Author(models.Model):
 
     @property
     def books_count(self) -> int:
-        return self.book.count()
+        return Author.objects.annotate(books_count=Count("books"))
 
     def save(self, *args, **kwargs) -> None:
         self.first_name = self.first_name.capitalize()
