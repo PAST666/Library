@@ -12,9 +12,9 @@ class AuthorManager(models.Manager):
 
     def search_authors(self, **kwargs) -> models.QuerySet:
         valid_filters: dict[str, str] = {
-            "title": "title__icontains",
-            "genre": "genre",
+            "books_title": "books__title__icontains",
             "nationality": "nationality",
+            "books_genre": "books__genre__name__icontains",
         }
 
         filters: dict[str, Any] = {}
