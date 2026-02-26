@@ -25,7 +25,7 @@ class AuthorManager(models.Manager):
                 filters[valid_filters[field]] = value
         queryset = self.all()
         if filters:
-            queryset = queryset.filter(**filters)
+            queryset = queryset.filter(**filters).distinct()
         return queryset
 
     def _annotate_by(self) -> models.QuerySet:
