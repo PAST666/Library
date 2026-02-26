@@ -53,10 +53,6 @@ class Author(models.Model):
         verbose_name_plural = "Авторы"
         ordering = ("last_name", "first_name")
 
-    @property
-    def books_count(self) -> int:
-        return Author.objects.annotate(books_count=Count("books"))
-
     def save(self, *args, **kwargs) -> None:
         self.first_name = self.first_name.lower()
         self.last_name = self.last_name.lower()

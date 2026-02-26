@@ -1,6 +1,10 @@
 from django.db import models
 from typing import Any
 
+from django.db.models import Count
+
+from authors.models import Author
+
 
 class AuthorManager(models.Manager):
     def get_all_authors(self) -> models.QuerySet:
@@ -22,5 +26,9 @@ class AuthorManager(models.Manager):
         queryset = self.all()
         if filters:
             queryset = queryset.filter(**filters)
-
         return queryset
+
+    def _annotate_by(self) -> models.QuerySet:
+        return Author.objects.annotate(
+            books_count=Count("books")
+        ).filter(books_count__gt=0)
