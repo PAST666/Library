@@ -42,11 +42,6 @@ class Author(models.Model):
         blank=True,
         verbose_name="Национальность"
     )
-    genres = models.ManyToManyField(
-        Genre,
-        verbose_name="Жанры",
-        related_name="authors"
-    )
     books = models.ManyToManyField(
         Book,
         verbose_name="Книги",
