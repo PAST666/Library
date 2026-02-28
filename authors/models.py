@@ -1,7 +1,6 @@
 from django.db import models
-from django.db.models import Count
 
-from books.models import Genre, Book
+from books.models import Book
 
 from .constants import MAX_NAME_LENGTH, MAX_CODE_LENGTH
 from .validators import KirillicLettersValidator
