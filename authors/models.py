@@ -1,7 +1,5 @@
 from django.db import models
 
-from books.models import Book
-
 from .constants import MAX_NAME_LENGTH, MAX_CODE_LENGTH
 from .validators import KirillicLettersValidator
 
@@ -40,11 +38,6 @@ class Author(models.Model):
         null=True,
         blank=True,
         verbose_name="Национальность"
-    )
-    books = models.ManyToManyField(
-        Book,
-        verbose_name="Книги",
-        related_name="authors"
     )
 
     class Meta:
