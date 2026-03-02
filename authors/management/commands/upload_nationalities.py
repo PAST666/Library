@@ -51,4 +51,3 @@ class Command(BaseCommand):
             print(f"Добавлено {len(created)} национальностей")
         else:
             print("Новых национальностей не добавлено")
-
