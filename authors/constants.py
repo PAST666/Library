@@ -1,0 +1,2 @@
+MAX_NAME_LENGTH: int = 150
+MAX_CODE_LENGTH: int = 2
