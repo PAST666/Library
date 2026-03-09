@@ -15,7 +15,7 @@ from .constants import (
     Roles,
 )
 from .managers import ActivationTokenManager
-from .validators import (
+from core.validators import (
     EmailValidator,
     KirillicLettersValidator,
     PhoneNumberValidator,
