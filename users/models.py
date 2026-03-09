@@ -6,6 +6,12 @@ from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 
+from core.validators import (
+    EmailValidator,
+    KirillicLettersValidator,
+    PhoneNumberValidator,
+)
+
 from .constants import (
     MAX_CODE_LENGTH,
     MAX_COUNTRY_LENGTH,
@@ -15,11 +21,6 @@ from .constants import (
     Roles,
 )
 from .managers import ActivationTokenManager
-from core.validators import (
-    EmailValidator,
-    KirillicLettersValidator,
-    PhoneNumberValidator,
-)
 
 
 class Country(models.Model):
