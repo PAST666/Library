@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'users',
     'books',
     'authors',
+    'core',
     'isbn_field',
 ]
 
