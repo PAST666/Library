@@ -158,6 +158,9 @@ class ActivationToken(models.Model):
                 name="unique_active_token",
             )
         ]
+        verbose_name = "Токен активации"
+        verbose_name_plural = "Токены активации"
+        ordering = ("user",)
 
     @property
     def is_valid(self) -> bool:
