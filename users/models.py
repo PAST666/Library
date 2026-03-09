@@ -20,7 +20,7 @@ from .constants import (
     MAX_PHONE_LENGTH,
     Roles,
 )
-from .managers import ActivationTokenManager
+from .managers import ActivationTokenManager, UserManager
 
 
 class Country(models.Model):
@@ -81,6 +81,7 @@ class User(AbstractUser):
     last_login = models.DateTimeField(auto_now=True)
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["first_name", "last_name", "email"]
+    objects = UserManager()
 
     class Meta:
         verbose_name = "Пользователь"
