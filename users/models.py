@@ -1,28 +1,24 @@
 import uuid
-
 from datetime import date
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 
 from .constants import (
+    MAX_CODE_LENGTH,
     MAX_COUNTRY_LENGTH,
     MAX_EMAIL_LENGTH,
     MAX_NAME_LENGTH,
     MAX_PHONE_LENGTH,
-    MAX_CODE_LENGTH,
-    Roles
+    Roles,
 )
-
+from .managers import ActivationTokenManager
 from .validators import (
-    KirillicLettersValidator,
     EmailValidator,
-    PhoneNumberValidator
-)
-
-from .managers import (
-    ActivationTokenManager
+    KirillicLettersValidator,
+    PhoneNumberValidator,
 )
 
 
