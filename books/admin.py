@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from books.models import Genre, Book, BookInventory
+from books.models import Book, BookInventory, Genre
+
 
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
