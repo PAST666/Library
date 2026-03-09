@@ -1,7 +1,7 @@
 from django.db import models
 
 from .constants import MAX_NAME_LENGTH, MAX_CODE_LENGTH
-from .validators import KirillicLettersValidator
+from core.validators import KirillicLettersValidator
 
 
 class Nationality(models.Model):
