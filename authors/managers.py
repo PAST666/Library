@@ -1,9 +1,7 @@
-from django.db import models
 from typing import Any
 
+from django.db import models
 from django.db.models import Count
-
-from authors.models import Author
 
 
 class AuthorManager(models.Manager):
