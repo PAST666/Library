@@ -63,6 +63,8 @@ class User(AbstractUser):
     )
     birth_date = models.DateField(
         "Дата рождения",
+        blank=False,
+        null=False
     )
     country = models.ForeignKey(
         Country,
