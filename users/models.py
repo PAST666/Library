@@ -15,7 +15,7 @@ from .constants import (
     Roles
 )
 
-from .validators import (
+from core.validators import (
     KirillicLettersValidator,
     EmailValidator,
     PhoneNumberValidator
