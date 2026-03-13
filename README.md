@@ -8,8 +8,7 @@
 ## Описание проекта
 
 # REST API для управления библиотекой. 
-# API предоставляет возможности для управления книгами, авторами и пользователями, а также предоставляет возможность 
-# отслеживать выдачу книг пользователям. 
+# API предоставляет возможности для управления книгами, авторами и пользователями, а также предоставляет возможность отслеживать выдачу книг пользователям. 
 
 
 
@@ -17,7 +16,7 @@
 
 ## Стек технологий
 
-- Python 3
+- Python
 - Django 4
 - Django REST Framework (DRF)
 - PostgreSQL
@@ -45,14 +44,14 @@ git clone https://github.com/PAST666/Library
     - **MacOS/Linux**:
 
       ```bash
-      python3 -m venv .venv
+      python -m venv .venv
       source .venv/bin/activate
       ```
 
 3. Установить зависимости:
 
     ```bash
-    pip3 install -r requirements.txt
+    pip install -r requirements.txt
     ```
 
 4. Настроить переменные окружения:
