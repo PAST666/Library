@@ -21,6 +21,8 @@
 - Django REST Framework (DRF)
 - PostgreSQL
 - Simple JWT
+- Docker
+- Docker Compose
 
 ## Как запустить проект
 
