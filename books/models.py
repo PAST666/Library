@@ -1,18 +1,17 @@
-from django.db import models
 from django.core.validators import MinValueValidator
+from django.db import models
 from isbn_field import ISBNField
-from users.models import User
 
 from .constants import (
+    MAX_AGE_RATING_LENGTH,
     MAX_NAME_LENGTH,
     MAX_NUMBER_ISBN,
-    MAX_AGE_RATING_LENGTH,
     MAX_STATUS_LENGTH,
     AgeRating,
-    Status
+    Status,
 )
-
 from .managers import BookManager
+from users.models import User
 
 
 class Genre(models.Model):
