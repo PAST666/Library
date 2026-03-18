@@ -1,29 +1,26 @@
 import uuid
-
 from datetime import date
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
 
+from core.validators import (
+    EmailValidator,
+    KirillicLettersValidator,
+    PhoneNumberValidator,
+)
+
 from .constants import (
+    MAX_CODE_LENGTH,
     MAX_COUNTRY_LENGTH,
     MAX_EMAIL_LENGTH,
     MAX_NAME_LENGTH,
     MAX_PHONE_LENGTH,
-    MAX_CODE_LENGTH,
-    Roles
+    Roles,
 )
-
-from .validators import (
-    KirillicLettersValidator,
-    EmailValidator,
-    PhoneNumberValidator
-)
-
-from .managers import (
-    ActivationTokenManager
-)
+from .managers import ActivationTokenManager, UserManager
 
 
 class Country(models.Model):
@@ -66,6 +63,8 @@ class User(AbstractUser):
     )
     birth_date = models.DateField(
         "Дата рождения",
+        blank=False,
+        null=False
     )
     country = models.ForeignKey(
         Country,
@@ -84,6 +83,7 @@ class User(AbstractUser):
     last_login = models.DateTimeField(auto_now=True)
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["first_name", "last_name", "email"]
+    objects = UserManager()
 
     class Meta:
         verbose_name = "Пользователь"
@@ -161,6 +161,9 @@ class ActivationToken(models.Model):
                 name="unique_active_token",
             )
         ]
+        verbose_name = "Токен активации"
+        verbose_name_plural = "Токены активации"
+        ordering = ("user",)
 
     @property
     def is_valid(self) -> bool:
