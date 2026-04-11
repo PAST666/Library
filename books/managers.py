@@ -15,7 +15,7 @@ class BookManager(models.Manager):
         valid_filters: dict[str, str] = {
             "title": "title__icontains",
             "genre": "genre",
-            "publication_year" : "publication_year",
+            "publication_date": "publication_date__year",
             "pages": "pages"
         }
 
