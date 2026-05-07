@@ -16,8 +16,6 @@ class BookAdmin(admin.ModelAdmin):
         "pages",
         "publication_date",
         "user",
-        "author",
-        "genre",
         "isbn",
         "age_rating"
     )

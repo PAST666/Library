@@ -106,12 +106,18 @@ class BookInventory(models.Model):
         null=True,
         verbose_name="Книга",
         related_name="book_inventory",
-        db_index=True
     )
     status: str = models.CharField(
         "Статус",
         choices=Status.choices,
         max_length=MAX_STATUS_LENGTH
+    )
+    curr_holder = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="borrowed_items"
     )
 
     class Meta:
