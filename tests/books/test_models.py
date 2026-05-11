@@ -1,6 +1,6 @@
 import pytest
 
-from books.models import Genre, Book
+from books.models import Genre
 
 @pytest.mark.django_db
 class TestGenreModel:
