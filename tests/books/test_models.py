@@ -1,6 +1,7 @@
 import pytest
-
+from django.core.exceptions import ValidationError
 from books.models import Genre
+
 
 @pytest.mark.django_db
 class TestGenreModel:
@@ -17,3 +18,8 @@ class TestGenreModel:
     def test_genre_created(self):
         genre_from_db = Genre.objects.get(name="фантастика")
         assert genre_from_db.name == "фантастика"
+
+    def test_empty_genre(self):
+        empty_genre = Genre(name="")
+        with pytest.raises(ValidationError):
+            empty_genre.full_clean()
