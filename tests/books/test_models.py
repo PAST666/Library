@@ -48,3 +48,7 @@ class TestGenreModel:
         self.genre.full_clean()
         self.genre.save()
         assert self.genre.name == "фантастика"
+
+    def str_method(self):
+        self.genre = Genre(name="Фантастика")
+        assert str(self.genre) == "фантастика"
