@@ -30,3 +30,4 @@ class TestGenreModel:
         self.genre = Genre(name="Фантастика")
         with pytest.raises(IntegrityError):
             self.genre.save()
+
