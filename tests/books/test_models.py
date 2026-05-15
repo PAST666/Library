@@ -42,3 +42,9 @@ class TestGenreModel:
         self.genre.full_clean()
         with pytest.raises(ValidationError):
             self.genre.save()
+
+    def check_lower(self):
+        self.genre = Genre(name="ФАНТАСТИКА")
+        self.genre.full_clean()
+        self.genre.save()
+        assert self.genre.name == "фантастика"
