@@ -31,3 +31,9 @@ class TestGenreModel:
         with pytest.raises(IntegrityError):
             self.genre.save()
 
+    def len_150_symbols(self):
+        self.genre = Genre(name="а"*150)
+        self.genre.full_clean()
+        self.genre.save()
+        assert len(self.genre.name) == 150
+
