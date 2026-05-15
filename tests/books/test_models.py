@@ -1,5 +1,7 @@
 import pytest
 from django.core.exceptions import ValidationError
+from django.db import IntegrityError
+
 from books.models import Genre
 
 
@@ -23,3 +25,8 @@ class TestGenreModel:
         empty_genre = Genre(name="")
         with pytest.raises(ValidationError):
             empty_genre.full_clean()
+
+    def unique_field(self):
+        self.genre = Genre(name="Фантастика")
+        with pytest.raises(IntegrityError):
+            self.genre.save()
