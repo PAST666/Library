@@ -26,29 +26,29 @@ class TestGenreModel:
         with pytest.raises(ValidationError):
             empty_genre.full_clean()
 
-    def unique_field(self):
+    def test_unique_field(self):
         self.genre = Genre(name="Фантастика")
         with pytest.raises(IntegrityError):
             self.genre.save()
 
-    def len_150_symbols(self):
+    def test_len_150_symbols(self):
         self.genre = Genre(name="а"*150)
         self.genre.full_clean()
         self.genre.save()
         assert len(self.genre.name) == 150
 
-    def len_151_symbols(self):
+    def test_len_151_symbols(self):
         self.genre = Genre(name="а" * 151)
         self.genre.full_clean()
         with pytest.raises(ValidationError):
             self.genre.save()
 
-    def check_lower(self):
+    def test_check_lower(self):
         self.genre = Genre(name="ФАНТАСТИКА")
         self.genre.full_clean()
         self.genre.save()
         assert self.genre.name == "фантастика"
 
-    def str_method(self):
+    def test_str_method(self):
         self.genre = Genre(name="Фантастика")
         assert str(self.genre) == "фантастика"
