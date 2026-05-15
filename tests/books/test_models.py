@@ -37,3 +37,8 @@ class TestGenreModel:
         self.genre.save()
         assert len(self.genre.name) == 150
 
+    def len_151_symbols(self):
+        self.genre = Genre(name="а" * 151)
+        self.genre.full_clean()
+        with pytest.raises(ValidationError):
+            self.genre.save()
