@@ -1,8 +1,9 @@
 import pytest
+from datetime import date
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
-from books.models import Genre
+from books.models import Genre, Book
 
 
 @pytest.mark.django_db
@@ -10,6 +11,7 @@ class TestGenreModel:
 
     @pytest.fixture(autouse=True)
     def setup(self):
+
         self.object = Genre(
             name="Фантастика"
         )
@@ -52,3 +54,27 @@ class TestGenreModel:
     def test_str_method(self):
         self.genre = Genre(name="Фантастика")
         assert str(self.genre) == "фантастика"
+
+    def test_create_book_with_correct_fields(self, author, genre, user):
+        expected_date = date(2020, 1, 1)
+        book = Book(
+            title="Фантастика",
+            pages=300,
+            publication_date=expected_date,
+            isbn="9780306406157",
+            age_rating="ABOVE_ZERO",
+            user=user
+        )
+        book.full_clean()
+        book.save()
+        book.author.add(author)
+        book.genre.add(genre)
+        book_from_db = Book.objects.get(pk=book.pk)
+        assert book_from_db.title == "Фантастика"
+        assert book_from_db.pages == 300
+        assert book_from_db.publication_date == expected_date
+        assert book_from_db.isbn == "9780306406157"
+        assert book_from_db.age_rating == "ABOVE_ZERO"
+        assert book_from_db.user == user
+        assert book_from_db.author.filter(pk=author.pk).exists()
+        assert book_from_db.genre.filter(pk=genre.pk).exists()
