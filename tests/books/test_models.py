@@ -89,4 +89,16 @@ class TestGenreModel:
         with pytest.raises(ValidationError):
             book.full_clean()
 
-
+    def test_len_title_150_symbols(self, user):
+        expected_date = date(2020, 1, 1)
+        book = Book(
+            title="а"*150,
+            pages=300,
+            publication_date=expected_date,
+            isbn="9780306406157",
+            age_rating="ABOVE_ZERO",
+            user=user
+        )
+        book.full_clean()
+        book.save()
+        assert len(book.title) == 150
