@@ -194,3 +194,61 @@ class TestGenreModel:
         )
         with pytest.raises(ValidationError):
             book.full_clean()
+
+    def age_rating_is_valid(self, user):
+        expected_date = date(2020, 1, 1)
+        book1 = Book(
+            title="Фантастика",
+            pages=300,
+            publication_date=expected_date,
+            isbn="9780306406151",
+            age_rating="ABOVE_ZERO",
+            user=user
+        )
+        book1.full_clean()
+        book1.save()
+        book2 = Book(
+            title="Фантастика",
+            pages=300,
+            publication_date=expected_date,
+            isbn="9780306406152",
+            age_rating="ABOVE_SIX",
+            user=user
+        )
+        book2.full_clean()
+        book2.save()
+        book3 = Book(
+            title="Фантастика",
+            pages=300,
+            publication_date=expected_date,
+            isbn="9780306406153",
+            age_rating="ABOVE_TWELVE",
+            user=user
+        )
+        book3.full_clean()
+        book3.save()
+        book4 = Book(
+            title="Фантастика",
+            pages=300,
+            publication_date=expected_date,
+            isbn="9780306406154",
+            age_rating="ABOVE_SIXTEEN",
+            user=user
+        )
+        book4.full_clean()
+        book4.save()
+        book5 = Book(
+            title="Фантастика",
+            pages=300,
+            publication_date=expected_date,
+            isbn="9780306406155",
+            age_rating="ABOVE_EIGHTEEN",
+            user=user
+        )
+        book5.full_clean()
+        book5.save()
+        assert Book.objects.filter(pk=book1.pk).exists()
+        assert Book.objects.filter(pk=book2.pk).exists()
+        assert Book.objects.filter(pk=book3.pk).exists()
+        assert Book.objects.filter(pk=book4.pk).exists()
+        assert Book.objects.filter(pk=book5.pk).exists()
