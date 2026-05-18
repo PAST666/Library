@@ -115,3 +115,14 @@ class TestGenreModel:
         )
         with pytest.raises(ValidationError):
             book.full_clean()
+
+    def test_zero_pages(self, user):
+        expected_date = date(2020, 1, 1)
+        book = Book(
+            title="Фантастика",
+            pages=0,
+            publication_date=expected_date,
+            isbn="9780306406157",
+            age_rating="ABOVE_ZERO",
+            user=user
+        )
