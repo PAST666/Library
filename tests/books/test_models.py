@@ -252,3 +252,16 @@ class TestGenreModel:
         assert Book.objects.filter(pk=book3.pk).exists()
         assert Book.objects.filter(pk=book4.pk).exists()
         assert Book.objects.filter(pk=book5.pk).exists()
+
+    def test_age_rating_not_valid(self, user):
+        expected_date = date(2020, 1, 1)
+        book = Book(
+            title="Фантастика",
+            pages=300,
+            publication_date=expected_date,
+            isbn="9780306406157",
+            age_rating="ABOVE_HUNDRED",
+            user=user
+        )
+        with pytest.raises(ValidationError):
+            book.full_clean()
