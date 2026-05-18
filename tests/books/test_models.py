@@ -181,3 +181,16 @@ class TestGenreModel:
         book2.full_clean()
         with pytest.raises(IntegrityError):
             book2.save()
+
+    def test_isbn_not_valid(self, user):
+        expected_date = date(2020, 1, 1)
+        book = Book(
+            title="Фантастика",
+            pages=300,
+            publication_date=expected_date,
+            isbn="1234567890ABC",
+            age_rating="ABOVE_ZERO",
+            user=user
+        )
+        with pytest.raises(ValidationError):
+            book.full_clean()
