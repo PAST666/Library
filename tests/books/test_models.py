@@ -265,3 +265,14 @@ class TestGenreModel:
         )
         with pytest.raises(ValidationError):
             book.full_clean()
+
+    def test_without_publication_date(self, user):
+        book = Book(
+            title="Фантастика",
+            pages=-1,
+            isbn="9780306406157",
+            age_rating="ABOVE_ZERO",
+            user=user
+        )
+        with pytest.raises(ValidationError):
+            book.full_clean()
