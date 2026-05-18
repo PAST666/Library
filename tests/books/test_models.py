@@ -126,3 +126,5 @@ class TestGenreModel:
             age_rating="ABOVE_ZERO",
             user=user
         )
+        with pytest.raises(ValidationError):
+            book.full_clean()
