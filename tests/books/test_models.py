@@ -144,3 +144,16 @@ class TestGenreModel:
         book_from_db = Book.objects.get(pk=book.pk)
         assert book_from_db.pages == 1
         assert Book.objects.filter(pk=book.pk).exists()
+
+    def test_count_of_pages_low_zero(self, user):
+        expected_date = date(2020, 1, 1)
+        book = Book(
+            title="Фантастика",
+            pages=-1,
+            publication_date=expected_date,
+            isbn="9780306406157",
+            age_rating="ABOVE_ZERO",
+            user=user
+        )
+        with pytest.raises(ValidationError):
+            book.full_clean()
