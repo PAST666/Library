@@ -157,3 +157,27 @@ class TestGenreModel:
         )
         with pytest.raises(ValidationError):
             book.full_clean()
+
+    def isbn_is_not_unique(self, user):
+        expected_date = date(2020, 1, 1)
+        book = Book(
+            title="Фантастика",
+            pages=300,
+            publication_date=expected_date,
+            isbn="9780306406157",
+            age_rating="ABOVE_ZERO",
+            user=user
+        )
+        book.full_clean()
+        book.save()
+        book2 = Book(
+            title="Фантастика",
+            pages=300,
+            publication_date=expected_date,
+            isbn="9780306406157",
+            age_rating="ABOVE_ZERO",
+            user=user
+        )
+        book2.full_clean()
+        with pytest.raises(IntegrityError):
+            book2.save()
