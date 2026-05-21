@@ -287,4 +287,19 @@ class TestGenreModel:
         )
         book.full_clean()
         book.save()
-        assert book.user == "NULL"
+        assert book.user is None
+
+    def test_delete_user_and_userfield_is_null(self, user):
+        book = Book(
+            title="Фантастика",
+            pages=300,
+            isbn="9780306406157",
+            age_rating="ABOVE_ZERO",
+            user=user
+        )
+        book.full_clean()
+        book.save()
+        user.delete()
+        book.refresh_from_db()
+        assert Book.objects.filter(pk=book.pk).exists()
+        assert book.user is None
