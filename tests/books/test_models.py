@@ -276,3 +276,15 @@ class TestGenreModel:
         )
         with pytest.raises(ValidationError):
             book.full_clean()
+
+    def test_create_book_without_user(self):
+        book = Book(
+            title="Фантастика",
+            pages=300,
+            isbn="9780306406157",
+            age_rating="ABOVE_ZERO",
+            user=None
+        )
+        book.full_clean()
+        book.save()
+        assert book.user == "NULL"
