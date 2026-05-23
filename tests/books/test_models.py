@@ -316,3 +316,18 @@ class TestGenreModel:
         book.save()
         book.author.set([author, author2])
         assert book.author.count() == 2
+
+    def test_one_book_has_two_genres(self, user):
+        genre1 = Genre(name="Фантастика")
+        genre2 = Genre(name="Детектив")
+        book = Book(
+            title="Фантастика",
+            pages=300,
+            isbn="9780306406157",
+            age_rating="ABOVE_ZERO",
+            user=user
+        )
+        book.full_clean()
+        book.save()
+        book.genre.set([genre1, genre2])
+        assert book.genre.count() == 2
