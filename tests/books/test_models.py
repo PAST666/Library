@@ -3,7 +3,7 @@ from datetime import date
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
-from books.models import Genre, Book
+from books.models import Genre, Book, BookInventory
 
 
 @pytest.mark.django_db
@@ -467,4 +467,21 @@ class TestGenreModel:
             age_rating="ABOVE_ZERO",
             user=user
         )
+        book.full_clean()
+        book.save()
         assert str(book) == "Мастер и Маргарита"
+
+    def test_create_book_inventory(self, user):
+        book = Book(
+            title="Фантастика",
+            pages=300,
+            isbn="9780306406151",
+            age_rating="ABOVE_TWELVE",
+            user=user
+        )
+        book.full_clean()
+        book.save()
+        book_inventory = BookInventory(book=book, status="AVAILABLE")
+        book_inventory.full_clean()
+        book_inventory.save()
+        assert BookInventory.objects.filter(pk=book_inventory.pk).exists()
