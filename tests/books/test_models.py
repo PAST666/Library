@@ -303,3 +303,16 @@ class TestGenreModel:
         book.refresh_from_db()
         assert Book.objects.filter(pk=book.pk).exists()
         assert book.user is None
+
+    def test_one_book_has_two_authors(self, user, author, author2):
+        book = Book(
+            title="Фантастика",
+            pages=300,
+            isbn="9780306406157",
+            age_rating="ABOVE_ZERO",
+            user=user
+        )
+        book.full_clean()
+        book.save()
+        book.author.set([author, author2])
+        assert book.author.count() == 2
