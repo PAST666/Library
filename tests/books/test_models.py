@@ -346,6 +346,10 @@ class TestGenreModel:
             age_rating="ABOVE_SIX",
             user=user
         )
+        book1.full_clean()
+        book2.full_clean()
+        book1.save()
+        book2.save()
         assert book1.is_for_child
         assert book2.is_for_child
 
@@ -371,6 +375,12 @@ class TestGenreModel:
             age_rating="ABOVE_EIGHTEEN",
             user=user
         )
+        book1.full_clean()
+        book2.full_clean()
+        book3.full_clean()
+        book1.save()
+        book2.save()
+        book3.save()
         assert not book1.is_for_child
         assert not book2.is_for_child
         assert not book3.is_for_child
