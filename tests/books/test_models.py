@@ -384,3 +384,25 @@ class TestGenreModel:
         assert not book1.is_for_child
         assert not book2.is_for_child
         assert not book3.is_for_child
+
+    def test_is_for_teenager_return_true_above_twelve_and_above_sixteen(self, user):
+        book1 = Book(
+            title="Фантастика",
+            pages=300,
+            isbn="9780306406151",
+            age_rating="ABOVE_TWELVE",
+            user=user
+        )
+        book2 = Book(
+            title="Детектив",
+            pages=300,
+            isbn="9780306406152",
+            age_rating="ABOVE_SIXTEEN",
+            user=user
+        )
+        book1.full_clean()
+        book2.full_clean()
+        book1.save()
+        book2.save()
+        assert book1.is_for_teenager
+        assert book2.is_for_teenager
