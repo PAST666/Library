@@ -532,3 +532,16 @@ class TestGenreModel:
         assert BookInventory.objects.filter(pk=book_inventory2.pk).exists()
         assert BookInventory.objects.filter(pk=book_inventory3.pk).exists()
 
+    def test_create_record_with_not_valid_status(self, user):
+        book = Book(
+            title="Фантастика",
+            pages=300,
+            isbn="9780306406151",
+            age_rating="ABOVE_TWELVE",
+            user=user
+        )
+        book.full_clean()
+        book.save()
+        book_inventory = BookInventory(book=book, status="LOST")
+        with pytest.raises(ValidationError):
+            book_inventory.full_clean()
