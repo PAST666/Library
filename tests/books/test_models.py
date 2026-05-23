@@ -508,3 +508,27 @@ class TestGenreModel:
         assert BookInventory.objects.filter(pk=book_inventory1.pk).exists()
         assert BookInventory.objects.filter(pk=book_inventory2.pk).exists()
         assert BookInventory.objects.filter(pk=book_inventory3.pk).exists()
+
+    def test_valid_records_book_inventories_with_all_statuses(self, user):
+        book = Book(
+            title="Фантастика",
+            pages=300,
+            isbn="9780306406151",
+            age_rating="ABOVE_TWELVE",
+            user=user
+        )
+        book.full_clean()
+        book.save()
+        book_inventory1 = BookInventory(book=book, status="AVAILABLE")
+        book_inventory2 = BookInventory(book=book, status="BUSY")
+        book_inventory3 = BookInventory(book=book, status="RESERVED")
+        book_inventory1.full_clean()
+        book_inventory2.full_clean()
+        book_inventory3.full_clean()
+        book_inventory1.save()
+        book_inventory2.save()
+        book_inventory3.save()
+        assert BookInventory.objects.filter(pk=book_inventory1.pk).exists()
+        assert BookInventory.objects.filter(pk=book_inventory2.pk).exists()
+        assert BookInventory.objects.filter(pk=book_inventory3.pk).exists()
+
