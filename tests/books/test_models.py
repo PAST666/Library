@@ -11,7 +11,6 @@ class TestGenreModel:
 
     @pytest.fixture(autouse=True)
     def setup(self):
-
         self.object = Genre(
             name="Фантастика"
         )
@@ -34,7 +33,7 @@ class TestGenreModel:
             genre.save()
 
     def test_len_150_symbols(self):
-        genre = Genre(name="а"*150)
+        genre = Genre(name="а" * 150)
         genre.full_clean()
         genre.save()
         assert len(genre.name) == 150
@@ -92,7 +91,7 @@ class TestGenreModel:
     def test_len_title_150_symbols(self, user):
         expected_date = date(2020, 1, 1)
         book = Book(
-            title="а"*150,
+            title="а" * 150,
             pages=300,
             publication_date=expected_date,
             isbn="9780306406157",
@@ -106,7 +105,7 @@ class TestGenreModel:
     def test_len_title_151_symbols(self, user):
         expected_date = date(2020, 1, 1)
         book = Book(
-            title="а"*151,
+            title="а" * 151,
             pages=300,
             publication_date=expected_date,
             isbn="9780306406157",
@@ -331,3 +330,21 @@ class TestGenreModel:
         book.save()
         book.genre.set([genre1, genre2])
         assert book.genre.count() == 2
+
+    def test_is_for_child_return_true_above_zero_and_above_six(self, user):
+        book1 = Book(
+            title="Фантастика",
+            pages=300,
+            isbn="9780306406157",
+            age_rating="ABOVE_ZERO",
+            user=user
+        )
+        book2 = Book(
+            title="Фантастика",
+            pages=300,
+            isbn="9780306406157",
+            age_rating="ABOVE_SIX",
+            user=user
+        )
+        assert book1.is_for_child
+        assert book2.is_for_child
