@@ -458,3 +458,13 @@ class TestGenreModel:
         assert not book3.is_for_adult
         assert not book4.is_for_adult
         assert book5.is_for_adult
+
+    def test_str_returns_correct_value(self, user):
+        book = Book(
+            title="Мастер и Маргарита",
+            pages=300,
+            isbn="9780306406151",
+            age_rating="ABOVE_ZERO",
+            user=user
+        )
+        assert str(book) == "Мастер и Маргарита"
