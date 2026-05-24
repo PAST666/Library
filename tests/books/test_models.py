@@ -471,6 +471,10 @@ class TestGenreModel:
         book.save()
         assert str(book) == "Мастер и Маргарита"
 
+
+@pytest.mark.django_db
+class TestBookInventoryModel:
+
     def test_create_book_inventory(self, user):
         book = Book(
             title="Фантастика",
@@ -574,6 +578,9 @@ class TestGenreModel:
         book_inventory.full_clean()
         book_inventory.save()
         assert str(book_inventory) == "Мастер и Маргар | 9780306406157 -> AVAILABLE"
+
+@pytest.mark.django_db
+class BookManagerModel:
 
     def test_get_all_books_list(self, user):
         book1 = Book(
@@ -746,7 +753,7 @@ class TestGenreModel:
         book2.save()
         assert set(Book.objects.search_books(unknown_field="значение")) == {book1, book2}
 
-    def test_recent_five_years(self,user):
+    def test_recent_five_years(self, user):
         book1 = Book(
             title="Фантастика",
             pages=300,
@@ -779,7 +786,7 @@ class TestGenreModel:
         book3.save()
         assert set(Book.objects.recent()) == {book2, book3}
 
-    def test_recent_one_year(self,user):
+    def test_recent_one_year(self, user):
         book1 = Book(
             title="Фантастика",
             pages=300,
