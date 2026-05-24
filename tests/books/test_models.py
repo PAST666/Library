@@ -724,3 +724,24 @@ class TestGenreModel:
         book1.save()
         book2.save()
         assert list(Book.objects.search_books(title="война")) == [book1]
+
+    def test_search_books_unknown_filter(self, user):
+        book1 = Book(
+            title="Война и мир",
+            pages=300,
+            isbn="9780306406151",
+            age_rating="ABOVE_TWELVE",
+            user=user
+        )
+        book2 = Book(
+            title="Анна Каренина",
+            pages=400,
+            isbn="9780306406152",
+            age_rating="ABOVE_SIXTEEN",
+            user=user
+        )
+        book1.full_clean()
+        book2.full_clean()
+        book1.save()
+        book2.save()
+        assert set(Book.objects.search_books(unknown_field="значение")) == {book1, book2}
