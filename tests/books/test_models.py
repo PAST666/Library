@@ -574,3 +574,33 @@ class TestGenreModel:
         book_inventory.full_clean()
         book_inventory.save()
         assert str(book_inventory) == "Мастер и Маргар | 9780306406157 -> AVAILABLE"
+
+    def test_get_all_books_list(self, user):
+        book1 = Book(
+            title="Фантастика",
+            pages=300,
+            isbn="9780306406151",
+            age_rating="ABOVE_TWELVE",
+            user=user
+        )
+        book2 = Book(
+            title="Детектив",
+            pages=400,
+            isbn="9780306406152",
+            age_rating="ABOVE_SIXTEEN",
+            user=user
+        )
+        book3 = Book(
+            title="Приключения",
+            pages=200,
+            isbn="9780306406153",
+            age_rating="ABOVE_EIGHTEEN",
+            user=user
+        )
+        book1.full_clean()
+        book2.full_clean()
+        book3.full_clean()
+        book1.save()
+        book2.save()
+        book3.save()
+        assert set(Book.objects.get_all_books_list()) == {book1, book2, book3}
