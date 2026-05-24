@@ -637,3 +637,4 @@ class TestGenreModel:
         BookInventory.objects.create(book=book2, status="BUSY")
         BookInventory.objects.create(book=book3, status="RESERVED")
         assert list(Book.objects.available()) == [book1]
+
