@@ -638,3 +638,35 @@ class TestGenreModel:
         BookInventory.objects.create(book=book3, status="RESERVED")
         assert list(Book.objects.available()) == [book1]
 
+    def test_return_busy_only(self, user):
+        book1 = Book(
+            title="Фантастика",
+            pages=300,
+            isbn="9780306406151",
+            age_rating="ABOVE_TWELVE",
+            user=user
+        )
+        book2 = Book(
+            title="Детектив",
+            pages=400,
+            isbn="9780306406152",
+            age_rating="ABOVE_SIXTEEN",
+            user=user
+        )
+        book3 = Book(
+            title="Приключения",
+            pages=200,
+            isbn="9780306406153",
+            age_rating="ABOVE_EIGHTEEN",
+            user=user
+        )
+        book1.full_clean()
+        book2.full_clean()
+        book3.full_clean()
+        book1.save()
+        book2.save()
+        book3.save()
+        BookInventory.objects.create(book=book1, status="AVAILABLE")
+        BookInventory.objects.create(book=book2, status="BUSY")
+        BookInventory.objects.create(book=book3, status="RESERVED")
+        assert list(Book.objects.busy()) == [book2]
