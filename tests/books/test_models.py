@@ -745,3 +745,36 @@ class TestGenreModel:
         book1.save()
         book2.save()
         assert set(Book.objects.search_books(unknown_field="значение")) == {book1, book2}
+
+    def test_recent_five_years(self,user):
+        book1 = Book(
+            title="Фантастика",
+            pages=300,
+            isbn="9780306406151",
+            publication_date=date(2016, 1, 1),
+            age_rating="ABOVE_TWELVE",
+            user=user
+        )
+        book2 = Book(
+            title="Детектив",
+            pages=400,
+            isbn="9780306406152",
+            publication_date=date(2023, 1, 1),
+            age_rating="ABOVE_SIXTEEN",
+            user=user
+        )
+        book3 = Book(
+            title="Приключения",
+            pages=200,
+            isbn="9780306406153",
+            publication_date=date(2026, 1, 1),
+            age_rating="ABOVE_EIGHTEEN",
+            user=user
+        )
+        book1.full_clean()
+        book2.full_clean()
+        book3.full_clean()
+        book1.save()
+        book2.save()
+        book3.save()
+        assert set(Book.objects.recent()) == {book2, book3}
