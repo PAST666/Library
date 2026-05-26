@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
 from books.models import Genre, Book, BookInventory
+from authors.models import Nationality
 
 
 @pytest.mark.django_db
@@ -818,3 +819,15 @@ class BookManagerModel:
         book2.save()
         book3.save()
         assert list(Book.objects.recent(years=1)) == [book3]
+
+
+@pytest.mark.django_db
+class TestNationalityModel:
+
+    def test_create_nationality_with_valid_fields(self):
+        nationality = Nationality(nationality="Русский", code="RU")
+        nationality.full_clean()
+        nationality.save()
+        nationality_from_db = Nationality.objects.get(pk=nationality.pk)
+        assert nationality_from_db.nationality == "Русский"
+        assert nationality_from_db.code == "RU"
