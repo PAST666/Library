@@ -33,3 +33,10 @@ class TestNationalityModel:
         nationality2 = Nationality(nationality="Русский", code="BY")
         with pytest.raises(IntegrityError):
             nationality2.save()
+
+    def test_field_code_unique(self):
+        nationality1 = Nationality(nationality="Русский", code="RU")
+        nationality1.save()
+        nationality2 = Nationality(nationality="Белорусский", code="RU")
+        with pytest.raises(IntegrityError):
+            nationality2.save()
