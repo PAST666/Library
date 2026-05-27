@@ -22,7 +22,7 @@ class TestNationalityModel:
         with pytest.raises(ValidationError):
             nationality.full_clean()
 
-    def test_create_record_with_empty_field_code(self):
-        nationality = Nationality(nationality="Русский", code="")
+    def test_create_record_with_empty_fields_nationality_and_code(self):
+        nationality = Nationality(nationality="", code="")
         with pytest.raises(ValidationError):
             nationality.full_clean()
