@@ -17,7 +17,12 @@ class TestNationalityModel:
         assert nationality_from_db.nationality == "Русский"
         assert nationality_from_db.code == "RU"
 
-    def create_record_with_empty_field_nationality(self):
+    def test_create_record_with_empty_field_nationality(self):
         nationality = Nationality(nationality="", code="RU")
+        with pytest.raises(ValidationError):
+            nationality.full_clean()
+
+    def test_create_record_with_empty_field_code(self):
+        nationality = Nationality(nationality="Русский", code="")
         with pytest.raises(ValidationError):
             nationality.full_clean()
