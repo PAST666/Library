@@ -26,3 +26,10 @@ class TestNationalityModel:
         nationality = Nationality(nationality="", code="")
         with pytest.raises(ValidationError):
             nationality.full_clean()
+
+    def test_field_nationality_unique(self):
+        nationality1 = Nationality(nationality="Русский", code="RU")
+        nationality1.save()
+        nationality2 = Nationality(nationality="Русский", code="BY")
+        with pytest.raises(IntegrityError):
+            nationality2.save()
