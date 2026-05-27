@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
 from books.models import Genre, Book, BookInventory
-from authors.models import Nationality
 
 
 @pytest.mark.django_db
