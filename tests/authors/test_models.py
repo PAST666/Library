@@ -40,3 +40,10 @@ class TestNationalityModel:
         nationality2 = Nationality(nationality="Белорусский", code="RU")
         with pytest.raises(IntegrityError):
             nationality2.save()
+
+    def test_max_len_nationality_field_150_symbols(self):
+        nationality = Nationality(nationality="а"*150, code="RU")
+        nationality.full_clean()
+        nationality.save()
+        nationality_from_db = Nationality.objects.get(pk=nationality.pk)
+        assert len(nationality_from_db.nationality) == 150
