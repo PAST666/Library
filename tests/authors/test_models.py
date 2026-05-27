@@ -47,3 +47,8 @@ class TestNationalityModel:
         nationality.save()
         nationality_from_db = Nationality.objects.get(pk=nationality.pk)
         assert len(nationality_from_db.nationality) == 150
+
+    def test_len_nationality_field_151_symbols(self):
+        nationality = Nationality(nationality="а"*151, code="RU")
+        with pytest.raises(ValidationError):
+            nationality.full_clean()
