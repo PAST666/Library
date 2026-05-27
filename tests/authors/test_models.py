@@ -63,3 +63,8 @@ class TestNationalityModel:
         nationality = Nationality(nationality="Русский", code="R")
         with pytest.raises(ValidationError):
             nationality.full_clean()
+
+    def test_len_code_field_3_symbols(self):
+        nationality = Nationality(nationality="Русский", code="RUS")
+        with pytest.raises(ValidationError):
+            nationality.full_clean()
