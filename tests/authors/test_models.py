@@ -3,7 +3,7 @@ from datetime import date
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
-from authors.models import Nationality
+from authors.models import Nationality, Author
 
 
 @pytest.mark.django_db
@@ -75,3 +75,22 @@ class TestNationalityModel:
         nationality.save()
         nationality_from_db = Nationality.objects.get(pk=nationality.pk)
         assert str(nationality_from_db) == "Русский"
+
+
+@pytest.mark.django_db
+class TestAuthorModel:
+
+    def test_create_valid_author_instance(self):
+        expected_date = date(1990, 1, 1)
+        nationality = Nationality(nationality="Русский", code="RU")
+        nationality.full_clean()
+        nationality.save()
+        author = Author(
+            first_name="Иван",
+            last_name="Иванов",
+            birth_date=expected_date,
+            nationality=nationality)
+        author.full_clean()
+        author.save()
+        assert author.first_name == "иван"
+        assert author.last_name == "иванов"
