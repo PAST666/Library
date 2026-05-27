@@ -58,3 +58,8 @@ class TestNationalityModel:
         nationality.full_clean()
         nationality.save()
         assert len(nationality.code) == 2
+
+    def test_len_code_field_1_symbol(self):
+        nationality = Nationality(nationality="Русский", code="R")
+        with pytest.raises(ValidationError):
+            nationality.full_clean()

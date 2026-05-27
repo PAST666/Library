@@ -1,3 +1,4 @@
+from django.core.validators import MinLengthValidator
 from django.db import models
 
 from core.validators import KirillicLettersValidator
@@ -7,7 +8,12 @@ from .constants import MAX_CODE_LENGTH, MAX_NAME_LENGTH
 
 class Nationality(models.Model):
     nationality = models.CharField(verbose_name="Название национальности", max_length=MAX_NAME_LENGTH, unique=True)
-    code = models.CharField(verbose_name="Буквенный код национальности", max_length=MAX_CODE_LENGTH, unique=True)
+    code = models.CharField(
+        verbose_name="Буквенный код национальности",
+        max_length=MAX_CODE_LENGTH,
+        unique=True,
+        validators=[MinLengthValidator(2)]
+    )
 
     class Meta:
         verbose_name = "Национальность"
