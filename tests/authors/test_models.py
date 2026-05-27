@@ -68,3 +68,10 @@ class TestNationalityModel:
         nationality = Nationality(nationality="Русский", code="RUS")
         with pytest.raises(ValidationError):
             nationality.full_clean()
+
+    def test_str_method_returns_correct_method(self):
+        nationality = Nationality(nationality="Русский", code="RU")
+        nationality.full_clean()
+        nationality.save()
+        nationality_from_db = Nationality.objects.get(pk=nationality.pk)
+        assert str(nationality_from_db) == "Русский"
