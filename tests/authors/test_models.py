@@ -221,3 +221,13 @@ class TestAuthorModel:
         )
         with pytest.raises(ValidationError):
             author.full_clean()
+
+    def test_len_last_name_151_symbols(self):
+        expected_date = date(1990, 1, 1)
+        author = Author(
+            first_name="Иван",
+            last_name="а"*151,
+            birth_date=expected_date,
+        )
+        with pytest.raises(ValidationError):
+            author.full_clean()
