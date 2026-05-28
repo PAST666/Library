@@ -166,3 +166,13 @@ class TestAuthorModel:
         )
         with pytest.raises(ValidationError):
             author.full_clean()
+
+    def test_first_name_field_contains_special_symbols(self):
+        expected_date = date(1990, 1, 1)
+        author = Author(
+            first_name="Иван!",
+            last_name="Иванов",
+            birth_date=expected_date,
+        )
+        with pytest.raises(ValidationError):
+            author.full_clean()
