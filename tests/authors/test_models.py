@@ -137,11 +137,21 @@ class TestAuthorModel:
         author_from_db = Author.objects.get(pk=author.pk)
         assert author_from_db.first_name == "иван"
 
-    def test_second_name_field_latin(self):
+    def test_first_name_field_latin(self):
         expected_date = date(1990, 1, 1)
         author = Author(
             first_name="Ivan",
             last_name="Иванов",
+            birth_date=expected_date,
+        )
+        with pytest.raises(ValidationError):
+            author.full_clean()
+
+    def test_last_name_field_latin(self):
+        expected_date = date(1990, 1, 1)
+        author = Author(
+            first_name="Иван",
+            last_name="Ivanov",
             birth_date=expected_date,
         )
         with pytest.raises(ValidationError):
