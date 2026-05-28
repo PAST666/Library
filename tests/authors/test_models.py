@@ -133,3 +133,18 @@ class TestAuthorModel:
             nationality=nationality)
         with pytest.raises(ValidationError):
             author.full_clean()
+
+    def test_first_name_field_kirillic(self):
+        expected_date = date(1990, 1, 1)
+        nationality = Nationality(nationality="Русский", code="RU")
+        nationality.full_clean()
+        nationality.save()
+        author = Author(
+            first_name="Иван",
+            last_name="Иванов",
+            birth_date=expected_date,
+            nationality=nationality)
+        author.full_clean()
+        author.save()
+        author_from_db = Author.objects.get(pk=author.pk)
+        assert author_from_db.first_name == "иван"
