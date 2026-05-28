@@ -120,3 +120,16 @@ class TestAuthorModel:
             nationality=nationality)
         with pytest.raises(ValidationError):
             author.full_clean()
+
+    def test_create_author_instance_with_empty_first_and_last_name_fields(self):
+        expected_date = date(1990, 1, 1)
+        nationality = Nationality(nationality="Русский", code="RU")
+        nationality.full_clean()
+        nationality.save()
+        author = Author(
+            first_name="",
+            last_name="",
+            birth_date=expected_date,
+            nationality=nationality)
+        with pytest.raises(ValidationError):
+            author.full_clean()
