@@ -94,3 +94,16 @@ class TestAuthorModel:
         author.save()
         assert author.first_name == "иван"
         assert author.last_name == "иванов"
+
+    def test_create_author_instance_with_empty_first_name_field(self):
+        expected_date = date(1990, 1, 1)
+        nationality = Nationality(nationality="Русский", code="RU")
+        nationality.full_clean()
+        nationality.save()
+        author = Author(
+            first_name="",
+            last_name="Иванов",
+            birth_date=expected_date,
+            nationality=nationality)
+        with pytest.raises(ValidationError):
+            author.full_clean()
