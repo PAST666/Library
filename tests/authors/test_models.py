@@ -200,3 +200,14 @@ class TestAuthorModel:
         author.save()
         author_from_db = Author.objects.get(pk=author.pk)
         assert author_from_db.last_name == "сухотина-толстая"
+
+    def test_max_len_first_name_150_symbols(self):
+        expected_date = date(1990, 1, 1)
+        author = Author(
+            first_name="а"*150,
+            last_name="Иванов",
+            birth_date=expected_date,
+        )
+        author.full_clean()
+        author.save()
+        assert len(author.first_name) == 150
