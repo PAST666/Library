@@ -20,3 +20,8 @@ class TestCountryModel:
         country = Country(name="", code="RU")
         with pytest.raises(ValidationError):
             country.full_clean()
+
+    def test_create_record_with_empty_code_name(self):
+        country = Country(name="Россия", code="")
+        with pytest.raises(ValidationError):
+            country.full_clean()
