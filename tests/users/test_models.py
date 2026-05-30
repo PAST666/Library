@@ -15,3 +15,8 @@ class TestCountryModel:
         country.refresh_from_db()
         assert country.name == "Россия"
         assert country.code == "RU"
+
+    def test_create_record_with_empty_field_name(self):
+        country = Country(name="", code="RU")
+        with pytest.raises(ValidationError):
+            country.full_clean()
