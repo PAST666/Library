@@ -262,3 +262,18 @@ class TestAuthorModel:
         author.refresh_from_db()
         assert Author.objects.filter(pk=author.pk).exists()
         assert author.nationality is None
+
+    def test_str_returns_correct_value(self):
+        expected_date = date(1990, 1, 1)
+        nationality = Nationality(nationality="Русский", code="RU")
+        nationality.full_clean()
+        nationality.save()
+        author = Author(
+            first_name="ИВАН",
+            last_name="ИВАНОВ",
+            birth_date=expected_date,
+            nationality=nationality,
+        )
+        author.full_clean()
+        author.save()
+        assert str(author) == "иван иванов"
