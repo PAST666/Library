@@ -65,3 +65,8 @@ class TestCountryModel:
         country = Country(name="Россия", code="R")
         with pytest.raises(ValidationError):
             country.full_clean()
+
+    def test_str_method_returns_valid_value(self):
+        country = Country.objects.create(name="Россия", code="RU")
+        country.refresh_from_db()
+        assert str(country) == "Россия"
