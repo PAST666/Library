@@ -108,3 +108,15 @@ class TestUserModel:
         )
         with pytest.raises(ValidationError):
             user.full_clean()
+
+    def test_create_user_with_last_name_empty_field(self):
+        user = User(
+            username="test_user",
+            first_name="Иван",
+            last_name="",
+            email="test@gmail.com",
+            password="securepass123"
+        )
+        with pytest.raises(ValidationError):
+            user.full_clean()
+
