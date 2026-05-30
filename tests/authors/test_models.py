@@ -265,14 +265,10 @@ class TestAuthorModel:
 
     def test_str_returns_correct_value(self):
         expected_date = date(1990, 1, 1)
-        nationality = Nationality(nationality="Русский", code="RU")
-        nationality.full_clean()
-        nationality.save()
         author = Author(
             first_name="ИВАН",
             last_name="ИВАНОВ",
             birth_date=expected_date,
-            nationality=nationality,
         )
         author.full_clean()
         author.save()
@@ -280,17 +276,21 @@ class TestAuthorModel:
 
     def test_first_name_and_second_name_become_lower_after_save(self):
         expected_date = date(1990, 1, 1)
-        nationality = Nationality(nationality="Русский", code="RU")
-        nationality.full_clean()
-        nationality.save()
         author = Author(
             first_name="ИВАН",
             last_name="ИВАНОВ",
             birth_date=expected_date,
-            nationality=nationality,
         )
         author.full_clean()
         author.save()
         author.refresh_from_db()
         assert author.first_name == "иван"
         assert author.last_name == "иванов"
+
+    def test_create_author_with_empty_field_birth_date(self):
+        author = Author(
+            first_name="Иван",
+            last_name="Иванов",
+        )
+        with pytest.raises(ValidationError):
+            author.full_clean()
