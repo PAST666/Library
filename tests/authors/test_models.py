@@ -244,3 +244,21 @@ class TestAuthorModel:
         author.save()
         author_from_db = Author.objects.get(pk=author.pk)
         assert author_from_db.nationality is None
+
+    def test_delete_nationality_field_becomes_none(self):
+        expected_date = date(1990, 1, 1)
+        nationality = Nationality(nationality="Русский", code="RU")
+        nationality.full_clean()
+        nationality.save()
+        author = Author(
+            first_name="Иван",
+            last_name="Иванов",
+            birth_date=expected_date,
+            nationality=nationality,
+        )
+        author.full_clean()
+        author.save()
+        nationality.delete()
+        author.refresh_from_db()
+        assert Author.objects.filter(pk=author.pk).exists()
+        assert author.nationality is None
