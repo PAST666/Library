@@ -2,6 +2,7 @@ import uuid
 from datetime import date
 
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinLengthValidator
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
@@ -25,7 +26,11 @@ from .managers import ActivationTokenManager, UserManager
 
 class Country(models.Model):
     name = models.CharField(verbose_name="Название страны", max_length=MAX_COUNTRY_LENGTH, unique=True)
-    code = models.CharField(verbose_name="Буквенный код страны", max_length=MAX_CODE_LENGTH, unique=True)
+    code = models.CharField(
+        verbose_name="Буквенный код страны",
+        max_length=MAX_CODE_LENGTH, unique=True,
+        validators=[MinLengthValidator(2)]
+    )
 
     class Meta:
         verbose_name = "Страна"

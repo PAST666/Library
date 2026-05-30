@@ -60,3 +60,8 @@ class TestCountryModel:
         country = Country(name="Россия", code="RUS")
         with pytest.raises(ValidationError):
             country.full_clean()
+
+    def test_len_of_code_field_is_1_symbol(self):
+        country = Country(name="Россия", code="R")
+        with pytest.raises(ValidationError):
+            country.full_clean()
