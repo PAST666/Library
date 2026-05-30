@@ -136,3 +136,16 @@ class TestUserModel:
         )
         with pytest.raises(ValidationError):
             user.full_clean()
+
+    def test_first_name_field_contains_numbers(self):
+        expected_date = date(1990, 1, 1)
+        user = User(
+            username="test_user",
+            first_name="Иван123",
+            last_name="Иванов",
+            email="test@gmail.com",
+            birth_date=expected_date,
+            password="securepass123"
+        )
+        with pytest.raises(ValidationError):
+            user.full_clean()
