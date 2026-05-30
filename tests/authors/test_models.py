@@ -277,3 +277,20 @@ class TestAuthorModel:
         author.full_clean()
         author.save()
         assert str(author) == "иван иванов"
+
+    def test_first_name_and_second_name_become_lower_after_save(self):
+        expected_date = date(1990, 1, 1)
+        nationality = Nationality(nationality="Русский", code="RU")
+        nationality.full_clean()
+        nationality.save()
+        author = Author(
+            first_name="ИВАН",
+            last_name="ИВАНОВ",
+            birth_date=expected_date,
+            nationality=nationality,
+        )
+        author.full_clean()
+        author.save()
+        author.refresh_from_db()
+        assert author.first_name == "иван"
+        assert author.last_name == "иванов"
