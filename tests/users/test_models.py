@@ -171,3 +171,60 @@ class TestUserModel:
         )
         with pytest.raises(IntegrityError):
             user2.save()
+
+    def test_different_emails(self):
+        expected_date = date(1990, 1, 1)
+        user1 = User.objects.create(
+            username="test_user1",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@gmail.com",
+            birth_date=expected_date,
+            password="securepass123"
+        )
+        user2 = User.objects.create(
+            username="test_user2",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@yandex.ru",
+            birth_date=expected_date,
+            password="securepass123"
+        )
+        user3 = User.objects.create(
+            username="test_user3",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@ya.ru",
+            birth_date=expected_date,
+            password="securepass123"
+        )
+        user4 = User.objects.create(
+            username="test_user4",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@mail.ru",
+            birth_date=expected_date,
+            password="securepass123"
+        )
+        user5 = User.objects.create(
+            username="test_user5",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@yahoo.com",
+            birth_date=expected_date,
+            password="securepass123"
+        )
+        user6 = User.objects.create(
+            username="test_user6",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@outlook.com",
+            birth_date=expected_date,
+            password="securepass123"
+        )
+        user1.full_clean()
+        user2.full_clean()
+        user3.full_clean()
+        user4.full_clean()
+        user5.full_clean()
+        user6.full_clean()
