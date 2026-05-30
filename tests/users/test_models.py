@@ -3,7 +3,9 @@ from datetime import date
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
-from users.models import Country
+from users.constants import Roles
+from users.models import Country, User
+
 
 @pytest.mark.django_db
 class TestCountryModel:
@@ -70,3 +72,28 @@ class TestCountryModel:
         country = Country.objects.create(name="Россия", code="RU")
         country.refresh_from_db()
         assert str(country) == "Россия"
+
+
+@pytest.mark.django_db
+class TestUserModel:
+
+    def test_create_valid_user(self):
+        expected_date = date(1990, 1, 1)
+        user = User(
+            username="test_user",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@gmail.com",
+            birth_date=expected_date,
+            password="securepass123"
+        )
+        user.full_clean()
+        user.save()
+        user.refresh_from_db()
+        assert user.username == "test_user"
+        assert user.first_name == "Иван"
+        assert user.last_name == "Иванов"
+        assert user.email == "test@gmail.com"
+        assert user.birth_date == expected_date
+        assert user.password == "securepass123"
+        assert user.role == Roles.USER
