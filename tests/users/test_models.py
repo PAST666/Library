@@ -48,3 +48,10 @@ class TestCountryModel:
         country = Country(name="а"*21, code="RU")
         with pytest.raises(ValidationError):
             country.full_clean()
+
+    def test_len_of_code_field_is_2_symbols(self):
+        country = Country.objects.create(name="Россия", code="RU")
+        country.full_clean()
+        country.save()
+        country.refresh_from_db()
+        assert len(country.code) == 2
