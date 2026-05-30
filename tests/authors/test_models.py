@@ -231,3 +231,16 @@ class TestAuthorModel:
         )
         with pytest.raises(ValidationError):
             author.full_clean()
+
+    def test_create_author_with_nationality_field_is_none(self):
+        expected_date = date(1990, 1, 1)
+        author = Author(
+            first_name="Иван",
+            last_name="Иванов",
+            birth_date=expected_date,
+            nationality=None,
+        )
+        author.full_clean()
+        author.save()
+        author_from_db = Author.objects.get(pk=author.pk)
+        assert author_from_db.nationality is None
