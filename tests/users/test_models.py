@@ -241,3 +241,16 @@ class TestUserModel:
         )
         with pytest.raises(ValidationError):
             user.full_clean()
+
+    def test_not_correct_email(self):
+        expected_date = date(1990, 1, 1)
+        user = User(
+            username="test_user",
+            first_name="Иван",
+            last_name="Иванов",
+            email="not-an-email",
+            birth_date=expected_date,
+            password="securepass123"
+        )
+        with pytest.raises(ValidationError):
+            user.full_clean()
