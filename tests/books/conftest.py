@@ -13,6 +13,7 @@ def author():
     )
     return author
 
+
 def author2():
     author = Author.objects.create(
         first_name="Лев",
