@@ -55,3 +55,8 @@ class TestCountryModel:
         country.save()
         country.refresh_from_db()
         assert len(country.code) == 2
+
+    def test_len_of_code_field_is_3_symbols(self):
+        country = Country(name="Россия", code="RUS")
+        with pytest.raises(ValidationError):
+            country.full_clean()
