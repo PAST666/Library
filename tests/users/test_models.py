@@ -25,3 +25,10 @@ class TestCountryModel:
         country = Country(name="Россия", code="")
         with pytest.raises(ValidationError):
             country.full_clean()
+
+    def test_unique_name_field(self):
+        country1 = Country(name="Россия", code="RU")
+        country1.save()
+        country2 = Country(name="Россия", code="BY")
+        with pytest.raises(IntegrityError):
+            country2.save()
