@@ -45,8 +45,8 @@ class TestNationalityModel:
         nationality = Nationality(nationality="а"*150, code="RU")
         nationality.full_clean()
         nationality.save()
-        nationality_from_db = Nationality.objects.get(pk=nationality.pk)
-        assert len(nationality_from_db.nationality) == 150
+        nationality.refresh_from_db()
+        assert len(nationality.nationality) == 150
 
     def test_len_nationality_field_151_symbols(self):
         nationality = Nationality(nationality="а"*151, code="RU")
@@ -73,8 +73,8 @@ class TestNationalityModel:
         nationality = Nationality(nationality="Русский", code="RU")
         nationality.full_clean()
         nationality.save()
-        nationality_from_db = Nationality.objects.get(pk=nationality.pk)
-        assert str(nationality_from_db) == "Русский"
+        nationality.refresh_from_db()
+        assert str(nationality) == "Русский"
 
 
 @pytest.mark.django_db
@@ -134,8 +134,8 @@ class TestAuthorModel:
         )
         author.full_clean()
         author.save()
-        author_from_db = Author.objects.get(pk=author.pk)
-        assert author_from_db.first_name == "иван"
+        author.refresh_from_db()
+        assert author.first_name == "иван"
 
     def test_first_name_field_latin(self):
         expected_date = date(1990, 1, 1)
@@ -186,8 +186,8 @@ class TestAuthorModel:
         )
         author.full_clean()
         author.save()
-        author_from_db = Author.objects.get(pk=author.pk)
-        assert author_from_db.first_name == "петр-павел"
+        author.refresh_from_db()
+        assert author.first_name == "петр-павел"
 
     def test_last_name_contains_double_dash(self):
         expected_date = date(1990, 1, 1)
@@ -198,8 +198,8 @@ class TestAuthorModel:
         )
         author.full_clean()
         author.save()
-        author_from_db = Author.objects.get(pk=author.pk)
-        assert author_from_db.last_name == "сухотина-толстая"
+        author.refresh_from_db()
+        assert author.last_name == "сухотина-толстая"
 
     def test_max_len_first_name_150_symbols(self):
         expected_date = date(1990, 1, 1)
