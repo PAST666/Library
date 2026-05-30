@@ -39,3 +39,7 @@ class TestCountryModel:
         country2 = Country(name="Беларусь", code="RU")
         with pytest.raises(IntegrityError):
             country2.save()
+
+    def test_name_field_max_valid_len_20_symbols(self):
+        country = Country.objects.create(name="а"*20, code="RU")
+        country.refresh_from_db()
