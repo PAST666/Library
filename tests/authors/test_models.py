@@ -13,9 +13,9 @@ class TestNationalityModel:
         nationality = Nationality(nationality="Русский", code="RU")
         nationality.full_clean()
         nationality.save()
-        nationality_from_db = Nationality.objects.get(pk=nationality.pk)
-        assert nationality_from_db.nationality == "Русский"
-        assert nationality_from_db.code == "RU"
+        nationality.refresh_from_db()
+        assert nationality.nationality == "Русский"
+        assert nationality.code == "RU"
 
     def test_create_record_with_empty_field_nationality(self):
         nationality = Nationality(nationality="", code="RU")
@@ -242,8 +242,8 @@ class TestAuthorModel:
         )
         author.full_clean()
         author.save()
-        author_from_db = Author.objects.get(pk=author.pk)
-        assert author_from_db.nationality is None
+        author.refresh_from_db()
+        assert author.nationality is None
 
     def test_delete_nationality_field_becomes_none(self):
         expected_date = date(1990, 1, 1)
@@ -260,7 +260,6 @@ class TestAuthorModel:
         author.save()
         nationality.delete()
         author.refresh_from_db()
-        assert Author.objects.filter(pk=author.pk).exists()
         assert author.nationality is None
 
     def test_str_returns_correct_value(self):
