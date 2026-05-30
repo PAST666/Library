@@ -149,3 +149,25 @@ class TestUserModel:
         )
         with pytest.raises(ValidationError):
             user.full_clean()
+
+    def test_email_field_unique(self):
+        expected_date = date(1990, 1, 1)
+        user1 = User(
+            username="test_user1",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@gmail.com",
+            birth_date=expected_date,
+            password="securepass123"
+        )
+        user1.save()
+        user2 = User(
+            username="test_user2",
+            first_name="Андрей",
+            last_name="Белов",
+            email="test@gmail.com",
+            birth_date=expected_date,
+            password="securepass345"
+        )
+        with pytest.raises(IntegrityError):
+            user2.save()
