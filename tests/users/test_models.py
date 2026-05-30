@@ -99,24 +99,40 @@ class TestUserModel:
         assert user.role == Roles.USER
 
     def test_create_user_with_first_name_empty_field(self):
+        expected_date = date(1990, 1, 1)
         user = User(
             username="test_user",
             first_name="",
             last_name="Иванов",
             email="test@gmail.com",
+            birth_date=expected_date,
             password="securepass123"
         )
         with pytest.raises(ValidationError):
             user.full_clean()
 
     def test_create_user_with_last_name_empty_field(self):
+        expected_date = date(1990, 1, 1)
         user = User(
             username="test_user",
             first_name="Иван",
             last_name="",
             email="test@gmail.com",
+            birth_date=expected_date,
             password="securepass123"
         )
         with pytest.raises(ValidationError):
             user.full_clean()
 
+    def test_first_name_field_language(self):
+        expected_date = date(1990, 1, 1)
+        user = User(
+            username="test_user",
+            first_name="Ivan",
+            last_name="Иванов",
+            email="test@gmail.com",
+            birth_date=expected_date,
+            password="securepass123"
+        )
+        with pytest.raises(ValidationError):
+            user.full_clean()
