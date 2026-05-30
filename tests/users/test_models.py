@@ -32,3 +32,10 @@ class TestCountryModel:
         country2 = Country(name="Россия", code="BY")
         with pytest.raises(IntegrityError):
             country2.save()
+
+    def test_unique_code_field(self):
+        country1 = Country(name="Россия", code="RU")
+        country1.save()
+        country2 = Country(name="Беларусь", code="RU")
+        with pytest.raises(IntegrityError):
+            country2.save()
