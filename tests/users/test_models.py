@@ -97,3 +97,14 @@ class TestUserModel:
         assert user.birth_date == expected_date
         assert user.password == "securepass123"
         assert user.role == Roles.USER
+
+    def test_create_user_with_first_name_empty_field(self):
+        user = User(
+            username="test_user",
+            first_name="",
+            last_name="Иванов",
+            email="test@gmail.com",
+            password="securepass123"
+        )
+        with pytest.raises(ValidationError):
+            user.full_clean()
