@@ -629,3 +629,18 @@ class TestActivationTokenModel:
         assert db_token is not None
         assert db_token.user == user
 
+    def test_token_field_is_created_automatically(self):
+        expected_date = date(1990, 1, 1)
+        user = User(
+            username="test_user",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+        )
+        user.full_clean()
+        user.save()
+        token = ActivationToken.objects.create_for_user(user)
+        token.refresh_from_db()
+        assert token.token is not None
