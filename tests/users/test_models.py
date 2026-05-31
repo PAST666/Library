@@ -1,10 +1,11 @@
 import pytest
-from datetime import date
+from datetime import date, timedelta
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
+from django.utils import timezone
 
 from users.constants import Roles
-from users.models import Country, User
+from users.models import Country, User, ActivationToken
 
 
 @pytest.mark.django_db
@@ -606,3 +607,25 @@ class TestUserModel:
         user.refresh_from_db()
         assert user.role == "ADMIN"
         assert user.is_superuser is True
+
+
+@pytest.mark.django_db
+class TestActivationTokenModel:
+
+    def test_create_token(self):
+        expected_date = date(1990, 1, 1)
+        user = User(
+            username="test_user",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+        )
+        user.full_clean()
+        user.save()
+        token = ActivationToken.objects.create_for_user(user)
+        db_token = ActivationToken.objects.get(pk=token.pk)
+        assert db_token is not None
+        assert db_token.user == user
+
