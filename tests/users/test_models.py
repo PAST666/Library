@@ -555,3 +555,23 @@ class TestUserModel:
         user.save()
         user.refresh_from_db()
         assert user.is_blocked is False
+
+    def test_country_field_becomes_none_after_delete(self):
+        expected_date = date(1990, 1, 1)
+        country = Country.objects.create(name="Россия", code="RU")
+        country.full_clean()
+        country.save()
+        user = User(
+            username="test_user1",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test1@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+            country=country
+        )
+        user.full_clean()
+        user.save()
+        country.delete()
+        user.refresh_from_db()
+        assert user.country is None
