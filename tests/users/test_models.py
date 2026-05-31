@@ -575,3 +575,17 @@ class TestUserModel:
         country.delete()
         user.refresh_from_db()
         assert user.country is None
+
+    def test_str_method_returns_username(self):
+        expected_date = date(1990, 1, 1)
+        user = User(
+            username="test_user",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test1@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+        )
+        user.full_clean()
+        user.save()
+        assert str(user) == "test_user"
