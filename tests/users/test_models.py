@@ -589,3 +589,20 @@ class TestUserModel:
         user.full_clean()
         user.save()
         assert str(user) == "test_user"
+
+    def test_usermanager_createsuperuser(self):
+        expected_date = date(1990, 1, 1)
+        user = User.objects.create_superuser(
+            username="admin",
+            first_name="Админ",
+            last_name="Админов",
+            email="admin@gmail.com",
+            birth_date=expected_date,
+            password="admin123",
+            role="ADMIN"
+        )
+        user.full_clean()
+        user.save()
+        user.refresh_from_db()
+        assert user.role == "ADMIN"
+        assert user.is_superuser is True
