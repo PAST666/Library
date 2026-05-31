@@ -323,3 +323,27 @@ class TestUserModel:
         user.save()
         user.refresh_from_db()
         assert user.phone_number is None
+
+    def test_phone_number_field_unique(self):
+        expected_date = date(1990, 1, 1)
+        user1 = User(
+            username="test_user1",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test1@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+            phone_number="+79001234567"
+        )
+        user1.save()
+        user2 = User(
+            username="test_user2",
+            first_name="Андрей",
+            last_name="Белов",
+            email="test2@gmail.com",
+            birth_date=expected_date,
+            password="securepass345",
+            phone_number="+79001234567"
+        )
+        with pytest.raises(IntegrityError):
+            user2.save()
