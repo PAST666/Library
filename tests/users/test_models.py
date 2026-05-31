@@ -435,3 +435,108 @@ class TestUserModel:
         user.save()
         user.refresh_from_db()
         assert user.role == "USER"
+
+    def test_check_roles(self):
+        expected_date = date(1990, 1, 1)
+        user1 = User.objects.create(
+            username="test_user1",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test1@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+            role="ADMIN"
+        )
+        user2 = User.objects.create(
+            username="test_user2",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test2@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+            role="MODERATOR"
+        )
+        user3 = User.objects.create(
+            username="test_user3",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test3@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+            role="EDITOR"
+        )
+        user4 = User.objects.create(
+            username="test_user4",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test4@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+            role="LIBRARIAN"
+        )
+        user5 = User.objects.create(
+            username="test_user5",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test5@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+            role="VIP"
+        )
+        user6 = User.objects.create(
+            username="test_user6",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test6@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+            role="USER"
+        )
+        user1.full_clean()
+        user2.full_clean()
+        user3.full_clean()
+        user4.full_clean()
+        user5.full_clean()
+        user6.full_clean()
+
+        assert user1.role == "ADMIN"
+        assert not user1.role == "MODERATOR"
+        assert not user1.role == "EDITOR"
+        assert not user1.role == "LIBRARIAN"
+        assert not user1.role == "VIP"
+        assert not user1.role == "USER"
+
+        assert not user2.role == "ADMIN"
+        assert user2.role == "MODERATOR"
+        assert not user2.role == "EDITOR"
+        assert not user2.role == "LIBRARIAN"
+        assert not user2.role == "VIP"
+        assert not user2.role == "USER"
+
+        assert not user3.role == "ADMIN"
+        assert not user3.role == "MODERATOR"
+        assert user3.role == "EDITOR"
+        assert not user3.role == "LIBRARIAN"
+        assert not user3.role == "VIP"
+        assert not user3.role == "USER"
+
+        assert not user4.role == "ADMIN"
+        assert not user4.role == "MODERATOR"
+        assert not user4.role == "EDITOR"
+        assert user4.role == "LIBRARIAN"
+        assert not user4.role == "VIP"
+        assert not user4.role == "USER"
+
+        assert not user5.role == "ADMIN"
+        assert not user5.role == "MODERATOR"
+        assert not user5.role == "EDITOR"
+        assert not user5.role == "LIBRARIAN"
+        assert user5.role == "VIP"
+        assert not user5.role == "USER"
+
+        assert not user6.role == "ADMIN"
+        assert not user6.role == "MODERATOR"
+        assert not user6.role == "EDITOR"
+        assert not user6.role == "LIBRARIAN"
+        assert not user6.role == "VIP"
+        assert user6.role == "USER"
