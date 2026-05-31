@@ -644,3 +644,31 @@ class TestActivationTokenModel:
         token = ActivationToken.objects.create_for_user(user)
         token.refresh_from_db()
         assert token.token is not None
+
+    def test_token_field_unique(self):
+        expected_date = date(1990, 1, 1)
+        user1 = User(
+            username="test_user1",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test1@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+        )
+        user2 = User(
+            username="test_user2",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test2@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+        )
+        user1.full_clean()
+        user2.full_clean()
+        user1.save()
+        user2.save()
+        token1 = ActivationToken.objects.create_for_user(user1)
+        token2 = ActivationToken.objects.create_for_user(user2)
+        token1.refresh_from_db()
+        token2.refresh_from_db()
+        assert token1.token != token2.token
