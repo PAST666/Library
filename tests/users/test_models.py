@@ -390,3 +390,20 @@ class TestUserModel:
             phone_number="+79001234567"
         )
         assert user.age is None
+
+    def test_birth_date_is_later_than_today(self):
+        today = date.today()
+        try:
+            future_date = today.replace(year=today.year + 1)
+        except ValueError:
+            future_date = today.replace(year=today.year + 1, day=28)
+        user = User(
+            username="test_user",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@gmail.com",
+            birth_date=future_date,
+            password="securepass123",
+        )
+        with pytest.raises(ValidationError):
+            user.full_clean()
