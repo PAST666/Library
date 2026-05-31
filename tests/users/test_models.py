@@ -755,3 +755,22 @@ class TestActivationTokenModel:
         user.save()
         token = ActivationToken.objects.create_for_user(user)
         assert str(token) == f"{user.username} -> {token.token}"
+
+    def test_time_of_expires_at_is_about_15_minutes_when_token_created(self):
+        expected_date = date(1990, 1, 1)
+        user = User(
+            username="test_user",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+        )
+        user.full_clean()
+        user.save()
+        fix_time = timezone.now()
+        token = ActivationToken.objects.create_for_user(user)
+        time_delta = token.expires_at - fix_time
+        min_delta = timezone.timedelta(minutes=14, seconds=55)
+        max_delta = timezone.timedelta(minutes=15, seconds=5)
+        assert min_delta <= time_delta <= max_delta
