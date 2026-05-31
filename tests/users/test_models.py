@@ -688,3 +688,21 @@ class TestActivationTokenModel:
         token = ActivationToken.objects.create_for_user(user)
         token.refresh_from_db()
         assert token.is_valid() is True
+
+    def test_create_token_is_valid_false(self):
+        expected_date = date(1990, 1, 1)
+        user = User(
+            username="test_user",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+        )
+        user.full_clean()
+        user.save()
+        token = ActivationToken.objects.create_for_user(user)
+        token.expires_at = timezone.now() - timezone.timedelta(minutes=1)
+        token.save()
+        token.refresh_from_db()
+        assert token.is_valid() is False
