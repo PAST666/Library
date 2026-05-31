@@ -43,11 +43,11 @@ class TestCountryModel:
             country2.save()
 
     def test_name_field_max_valid_len_20_symbols(self):
-        country = Country.objects.create(name="а"*20, code="RU")
+        country = Country.objects.create(name="а" * 20, code="RU")
         country.refresh_from_db()
 
     def test_name_field_len_21_symbols(self):
-        country = Country(name="а"*21, code="RU")
+        country = Country(name="а" * 21, code="RU")
         with pytest.raises(ValidationError):
             country.full_clean()
 
@@ -540,3 +540,18 @@ class TestUserModel:
         assert not user6.role == "LIBRARIAN"
         assert not user6.role == "VIP"
         assert user6.role == "USER"
+
+    def test_is_blocked_false_by_default(self):
+        expected_date = date(1990, 1, 1)
+        user = User(
+            username="test_user1",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test1@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+        )
+        user.full_clean()
+        user.save()
+        user.refresh_from_db()
+        assert user.is_blocked is False
