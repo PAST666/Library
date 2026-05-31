@@ -1,5 +1,5 @@
 import pytest
-from datetime import date, timedelta
+from datetime import date
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils import timezone
