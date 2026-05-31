@@ -347,3 +347,15 @@ class TestUserModel:
         )
         with pytest.raises(IntegrityError):
             user2.save()
+
+    def test_create_user_without_birth_date_field(self):
+        user = User(
+            username="test_user",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@gmail.com",
+            password="securepass123",
+            phone_number="+79001234567"
+        )
+        with pytest.raises(ValidationError):
+            user.full_clean()
