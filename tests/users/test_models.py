@@ -420,3 +420,18 @@ class TestUserModel:
         )
         user.full_clean()
         assert user.full_name == "Иванов Иван"
+
+    def test_default_role_is_user(self):
+        expected_date = date(1990, 1, 1)
+        user = User(
+            username="test_user",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@gmail.com",
+            birth_date=expected_date,
+            password="securepass123"
+        )
+        user.full_clean()
+        user.save()
+        user.refresh_from_db()
+        assert user.role == "USER"
