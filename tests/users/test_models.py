@@ -378,3 +378,15 @@ class TestUserModel:
         user.save()
         user.refresh_from_db()
         assert user.age == 30
+
+    def test_age_returns_none(self):
+        user = User(
+            username="test_user",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@gmail.com",
+            birth_date=None,
+            password="securepass123",
+            phone_number="+79001234567"
+        )
+        assert user.age is None
