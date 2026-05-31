@@ -672,3 +672,19 @@ class TestActivationTokenModel:
         token1.refresh_from_db()
         token2.refresh_from_db()
         assert token1.token != token2.token
+
+    def test_token_is_valid_true(self):
+        expected_date = date(1990, 1, 1)
+        user = User(
+            username="test_user",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+        )
+        user.full_clean()
+        user.save()
+        token = ActivationToken.objects.create_for_user(user)
+        token.refresh_from_db()
+        assert token.is_valid() is True
