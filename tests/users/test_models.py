@@ -359,3 +359,22 @@ class TestUserModel:
         )
         with pytest.raises(ValidationError):
             user.full_clean()
+
+    def test_birth_date_field_returns_valid_age(self):
+        today = date.today()
+        try:
+            expected_date = today.replace(year=today.year - 30)
+        except ValueError:
+            expected_date = today.replace(year=today.year - 30, day=28)
+        user = User(
+            username="test_user",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+        )
+        user.full_clean()
+        user.save()
+        user.refresh_from_db()
+        assert user.age == 30
