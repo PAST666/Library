@@ -294,3 +294,17 @@ class TestUserModel:
         )
         with pytest.raises(ValidationError):
             user.full_clean()
+
+    def test_invalid_phone_number_field_with_suffix(self):
+        expected_date = date(1990, 1, 1)
+        user = User(
+            username="test_user",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+            phone_number="+79001234567abc"
+        )
+        with pytest.raises(ValidationError):
+            user.full_clean()
