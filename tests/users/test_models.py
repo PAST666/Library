@@ -706,3 +706,20 @@ class TestActivationTokenModel:
         token.save()
         token.refresh_from_db()
         assert token.is_valid() is False
+
+    def test_error_when_another_token_created_for_user(self):
+        expected_date = date(1990, 1, 1)
+        user = User(
+            username="test_user",
+            first_name="Иван",
+            last_name="Иванов",
+            email="test@gmail.com",
+            birth_date=expected_date,
+            password="securepass123",
+        )
+        user.full_clean()
+        user.save()
+        token = ActivationToken.objects.create_for_user(user)
+        token.refresh_from_db()
+        with pytest.raises(IntegrityError):
+            ActivationToken.objects.create_for_user(user)
