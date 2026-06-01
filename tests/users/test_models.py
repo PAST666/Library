@@ -687,7 +687,7 @@ class TestActivationTokenModel:
         user.save()
         token = ActivationToken.objects.create_for_user(user)
         token.refresh_from_db()
-        assert token.is_valid() is True
+        assert token.is_valid is True
 
     def test_create_token_is_valid_false(self):
         expected_date = date(1990, 1, 1)
