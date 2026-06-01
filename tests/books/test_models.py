@@ -44,14 +44,16 @@ class TestGenreModel:
             genre.full_clean()
 
     def test_check_lower(self):
-        self.genre = Genre(name="ФАНТАСТИКА")
+        self.genre = Genre(name="УЖАСЫ")
         self.genre.full_clean()
         self.genre.save()
-        assert self.genre.name == "фантастика"
+        assert self.genre.name == "ужасы"
 
     def test_str_method(self):
-        genre = Genre(name="Фантастика")
-        assert str(genre) == "фантастика"
+        genre = Genre(name="Детектив")
+        genre.save()
+        genre.refresh_from_db()
+        assert str(genre) == "детектив"
 
     def test_create_book_with_correct_fields(self, author, genre, user):
         expected_date = date(2020, 1, 1)
@@ -282,11 +284,11 @@ class TestGenreModel:
             pages=300,
             isbn="9780306406157",
             age_rating="ABOVE_ZERO",
+            publication_date=date(2026, 1, 1),
             user=None
         )
-        book.full_clean()
-        book.save()
-        assert book.user is None
+        with pytest.raises(ValidationError):
+            book.full_clean()
 
     def test_delete_user_and_userfield_is_null(self, user):
         book = Book(
@@ -294,6 +296,7 @@ class TestGenreModel:
             pages=300,
             isbn="9780306406157",
             age_rating="ABOVE_ZERO",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book.full_clean()
@@ -309,6 +312,7 @@ class TestGenreModel:
             pages=300,
             isbn="9780306406157",
             age_rating="ABOVE_ZERO",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book.full_clean()
@@ -317,13 +321,18 @@ class TestGenreModel:
         assert book.author.count() == 2
 
     def test_one_book_has_two_genres(self, user):
-        genre1 = Genre(name="Фантастика")
+        genre1 = Genre(name="Роман")
+        genre1.full_clean()
+        genre1.save()
         genre2 = Genre(name="Детектив")
+        genre2.full_clean()
+        genre2.save()
         book = Book(
             title="Фантастика",
             pages=300,
             isbn="9780306406157",
             age_rating="ABOVE_ZERO",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book.full_clean()
@@ -335,15 +344,17 @@ class TestGenreModel:
         book1 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780306406157",
             age_rating="ABOVE_ZERO",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book2 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406152",
+            isbn="9780143128540",
             age_rating="ABOVE_SIX",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book1.full_clean()
@@ -357,22 +368,25 @@ class TestGenreModel:
         book1 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780451524935",
             age_rating="ABOVE_TWELVE",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book2 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406152",
+            isbn="9780306406157",
             age_rating="ABOVE_SIXTEEN",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book3 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406153",
+            isbn="9780439023481",
             age_rating="ABOVE_EIGHTEEN",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book1.full_clean()
@@ -389,15 +403,17 @@ class TestGenreModel:
         book1 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780451524935",
             age_rating="ABOVE_TWELVE",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book2 = Book(
             title="Детектив",
             pages=300,
-            isbn="9780306406152",
+            isbn="9780307277671",
             age_rating="ABOVE_SIXTEEN",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book1.full_clean()
@@ -411,36 +427,41 @@ class TestGenreModel:
         book1 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780743273565",
             age_rating="ABOVE_ZERO",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book2 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406152",
+            isbn="9780545010221",
             age_rating="ABOVE_SIX",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book3 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406153",
+            isbn="9780061120084",
             age_rating="ABOVE_TWELVE",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book4 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406154",
+            isbn="9780345339683",
             age_rating="ABOVE_SIXTEEN",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book5 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406155",
+            isbn="9780743273572",
             age_rating="ABOVE_EIGHTEEN",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book1.full_clean()
@@ -463,8 +484,9 @@ class TestGenreModel:
         book = Book(
             title="Мастер и Маргарита",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780545010221",
             age_rating="ABOVE_ZERO",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book.full_clean()
@@ -479,8 +501,9 @@ class TestBookInventoryModel:
         book = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780545010221",
             age_rating="ABOVE_TWELVE",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book.full_clean()
@@ -494,8 +517,9 @@ class TestBookInventoryModel:
         book = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780307277671",
             age_rating="ABOVE_TWELVE",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book.full_clean()
@@ -517,8 +541,9 @@ class TestBookInventoryModel:
         book = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780451167316",
             age_rating="ABOVE_TWELVE",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book.full_clean()
@@ -540,8 +565,9 @@ class TestBookInventoryModel:
         book = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780451167316",
             age_rating="ABOVE_TWELVE",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book.full_clean()
@@ -554,8 +580,9 @@ class TestBookInventoryModel:
         book = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780451167316",
             age_rating="ABOVE_TWELVE",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book.full_clean()
@@ -568,8 +595,9 @@ class TestBookInventoryModel:
         book = Book(
             title="Мастер и Маргарита",
             pages=300,
-            isbn="9780306406157",
+            isbn="9780451167316",
             age_rating="ABOVE_TWELVE",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book.full_clean()
@@ -577,7 +605,7 @@ class TestBookInventoryModel:
         book_inventory = BookInventory(book=book, status="AVAILABLE")
         book_inventory.full_clean()
         book_inventory.save()
-        assert str(book_inventory) == "Мастер и Маргар | 9780306406157 -> AVAILABLE"
+        assert str(book_inventory) == "Мастер и Маргар | 9780451167316 -> AVAILABLE"
 
 @pytest.mark.django_db
 class BookManagerModel:
@@ -586,22 +614,25 @@ class BookManagerModel:
         book1 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780451167316",
             age_rating="ABOVE_TWELVE",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book2 = Book(
             title="Детектив",
             pages=400,
-            isbn="9780306406152",
+            isbn="9780618640157",
             age_rating="ABOVE_SIXTEEN",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book3 = Book(
             title="Приключения",
             pages=200,
-            isbn="9780306406153",
+            isbn="9780743273572",
             age_rating="ABOVE_EIGHTEEN",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book1.full_clean()
@@ -616,22 +647,25 @@ class BookManagerModel:
         book1 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780451167316",
             age_rating="ABOVE_TWELVE",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book2 = Book(
             title="Детектив",
             pages=400,
-            isbn="9780306406152",
+            isbn="9780743273572",
             age_rating="ABOVE_SIXTEEN",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book3 = Book(
             title="Приключения",
             pages=200,
-            isbn="9780306406153",
+            isbn="9780451524935",
             age_rating="ABOVE_EIGHTEEN",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book1.full_clean()
@@ -649,22 +683,25 @@ class BookManagerModel:
         book1 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780451167316",
             age_rating="ABOVE_TWELVE",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book2 = Book(
             title="Детектив",
             pages=400,
-            isbn="9780306406152",
+            isbn="9780451524935",
             age_rating="ABOVE_SIXTEEN",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book3 = Book(
             title="Приключения",
             pages=200,
-            isbn="9780306406153",
+            isbn="9780439023481",
             age_rating="ABOVE_EIGHTEEN",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book1.full_clean()
@@ -682,22 +719,25 @@ class BookManagerModel:
         book1 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780451167316",
             age_rating="ABOVE_TWELVE",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book2 = Book(
             title="Детектив",
             pages=400,
-            isbn="9780306406152",
+            isbn="9780439023481",
             age_rating="ABOVE_SIXTEEN",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book3 = Book(
             title="Приключения",
             pages=200,
-            isbn="9780306406153",
+            isbn="9780141439518",
             age_rating="ABOVE_EIGHTEEN",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book1.full_clean()
@@ -715,15 +755,17 @@ class BookManagerModel:
         book1 = Book(
             title="Война и мир",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780451167316",
             age_rating="ABOVE_TWELVE",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book2 = Book(
             title="Анна Каренина",
             pages=400,
-            isbn="9780306406152",
+            isbn="9780141439518",
             age_rating="ABOVE_SIXTEEN",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book1.full_clean()
@@ -736,15 +778,17 @@ class BookManagerModel:
         book1 = Book(
             title="Война и мир",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780451167316",
             age_rating="ABOVE_TWELVE",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book2 = Book(
             title="Анна Каренина",
             pages=400,
-            isbn="9780306406152",
+            isbn="9780439023481",
             age_rating="ABOVE_SIXTEEN",
+            publication_date=date(2026, 1, 1),
             user=user
         )
         book1.full_clean()
@@ -757,7 +801,7 @@ class BookManagerModel:
         book1 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780451167316",
             publication_date=date(2016, 1, 1),
             age_rating="ABOVE_TWELVE",
             user=user
@@ -765,7 +809,7 @@ class BookManagerModel:
         book2 = Book(
             title="Детектив",
             pages=400,
-            isbn="9780306406152",
+            isbn="9780141439518",
             publication_date=date(2023, 1, 1),
             age_rating="ABOVE_SIXTEEN",
             user=user
@@ -773,7 +817,7 @@ class BookManagerModel:
         book3 = Book(
             title="Приключения",
             pages=200,
-            isbn="9780306406153",
+            isbn="9780439023481",
             publication_date=date(2026, 1, 1),
             age_rating="ABOVE_EIGHTEEN",
             user=user
@@ -790,7 +834,7 @@ class BookManagerModel:
         book1 = Book(
             title="Фантастика",
             pages=300,
-            isbn="9780306406151",
+            isbn="9780451167316",
             publication_date=date(2016, 1, 1),
             age_rating="ABOVE_TWELVE",
             user=user
@@ -798,7 +842,7 @@ class BookManagerModel:
         book2 = Book(
             title="Детектив",
             pages=400,
-            isbn="9780306406152",
+            isbn="9780439023481",
             publication_date=date(2023, 1, 1),
             age_rating="ABOVE_SIXTEEN",
             user=user
@@ -806,7 +850,7 @@ class BookManagerModel:
         book3 = Book(
             title="Приключения",
             pages=200,
-            isbn="9780306406153",
+            isbn="9780141439518",
             publication_date=date(2026, 1, 1),
             age_rating="ABOVE_EIGHTEEN",
             user=user
