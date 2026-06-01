@@ -705,7 +705,7 @@ class TestActivationTokenModel:
         token.expires_at = timezone.now() - timezone.timedelta(minutes=1)
         token.save()
         token.refresh_from_db()
-        assert token.is_valid() is False
+        assert token.is_valid is False
 
     def test_error_when_another_token_created_for_user(self):
         expected_date = date(1990, 1, 1)
