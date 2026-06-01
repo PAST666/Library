@@ -2,6 +2,7 @@ import uuid
 from datetime import date
 
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.core.validators import MinLengthValidator
 from django.db import models
 from django.db.models import Q
@@ -94,6 +95,19 @@ class User(AbstractUser):
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
         ordering = ("username",)
+
+    @staticmethod
+    def validate_birth_date(value):
+        if value and value > date.today():
+            raise ValidationError(
+                "Дата рождения не может быть в будущем.",
+                code="future_date"
+            )
+
+    def clean(self):
+        super().clean()
+        if self.birth_date:
+            self.validate_birth_date(self.birth_date)
 
     @property
     def age(self) -> int | None:
