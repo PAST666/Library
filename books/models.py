@@ -102,8 +102,7 @@ class Book(models.Model):
 class BookInventory(models.Model):
     book = models.ForeignKey(
         Book,
-        on_delete=models.SET_NULL,
-        null=True,
+        on_delete=models.CASCADE,
         verbose_name="Книга",
         related_name="book_inventory",
     )
