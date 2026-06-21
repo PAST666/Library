@@ -35,8 +35,13 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **kwargs):
+        kwargs.setdefault('is_staff', True)
         kwargs.setdefault('is_superuser', True)
         kwargs.setdefault('role', Roles.ADMIN)
+        if kwargs.get('is_staff') is not True:
+            raise ValueError('Суперпользователь должен иметь is_staff=True.')
+        if kwargs.get('is_superuser') is not True:
+            raise ValueError('Суперпользователь должен иметь is_superuser=True.')
         birth_date = kwargs.pop('birth_date', datetime.now().date())
         if isinstance(birth_date, datetime):
             birth_date = birth_date.date()
