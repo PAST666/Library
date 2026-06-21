@@ -54,7 +54,6 @@ class Book(models.Model):
         null=True,
         verbose_name="Пользователь",
         related_name="books",
-        db_index=True
     )
     author = models.ManyToManyField(
         "authors.Author",
