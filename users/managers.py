@@ -52,5 +52,3 @@ class UserManager(BaseUserManager):
             birth_date=birth_date,
             **kwargs
         )
-
-
