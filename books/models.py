@@ -118,6 +118,16 @@ class BookInventory(models.Model):
         blank=True,
         related_name="borrowed_items"
     )
+    borrowed_at = models.DateTimeField(
+        "Дата выдачи",
+        null=True,
+        blank=True
+    )
+    due_date = models.DateField(
+        "Дата возврата",
+        null=True,
+        blank=True
+    )
 
     class Meta:
         verbose_name = "Перечень книг"
