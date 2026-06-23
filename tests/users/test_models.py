@@ -501,47 +501,47 @@ class TestUserModel:
         user5.full_clean()
         user6.full_clean()
 
-        assert user1.role == "ADMIN"
-        assert not user1.role == "MODERATOR"
-        assert not user1.role == "EDITOR"
-        assert not user1.role == "LIBRARIAN"
-        assert not user1.role == "VIP"
-        assert not user1.role == "USER"
+        assert user1.is_admin is True
+        assert user1.is_moderator is False
+        assert user1.is_editor is False
+        assert user1.is_librarian is False
+        assert user1.is_vip is False
+        assert user1.is_user is False
 
-        assert not user2.role == "ADMIN"
-        assert user2.role == "MODERATOR"
-        assert not user2.role == "EDITOR"
-        assert not user2.role == "LIBRARIAN"
-        assert not user2.role == "VIP"
-        assert not user2.role == "USER"
+        assert user2.is_admin is False
+        assert user2.is_moderator is True
+        assert user2.is_editor is False
+        assert user2.is_librarian is False
+        assert user2.is_vip is False
+        assert user2.is_user is False
 
-        assert not user3.role == "ADMIN"
-        assert not user3.role == "MODERATOR"
-        assert user3.role == "EDITOR"
-        assert not user3.role == "LIBRARIAN"
-        assert not user3.role == "VIP"
-        assert not user3.role == "USER"
+        assert user3.is_admin is False
+        assert user3.is_moderator is False
+        assert user3.is_editor is True
+        assert user3.is_librarian is False
+        assert user3.is_vip is False
+        assert user3.is_user is False
 
-        assert not user4.role == "ADMIN"
-        assert not user4.role == "MODERATOR"
-        assert not user4.role == "EDITOR"
-        assert user4.role == "LIBRARIAN"
-        assert not user4.role == "VIP"
-        assert not user4.role == "USER"
+        assert user4.is_admin is False
+        assert user4.is_moderator is False
+        assert user4.is_editor is False
+        assert user4.is_librarian is True
+        assert user4.is_vip is False
+        assert user4.is_user is False
 
-        assert not user5.role == "ADMIN"
-        assert not user5.role == "MODERATOR"
-        assert not user5.role == "EDITOR"
-        assert not user5.role == "LIBRARIAN"
-        assert user5.role == "VIP"
-        assert not user5.role == "USER"
+        assert user5.is_admin is False
+        assert user5.is_moderator is False
+        assert user5.is_editor is False
+        assert user5.is_librarian is False
+        assert user5.is_vip is True
+        assert user5.is_user is False
 
-        assert not user6.role == "ADMIN"
-        assert not user6.role == "MODERATOR"
-        assert not user6.role == "EDITOR"
-        assert not user6.role == "LIBRARIAN"
-        assert not user6.role == "VIP"
-        assert user6.role == "USER"
+        assert user6.is_admin is False
+        assert user6.is_moderator is False
+        assert user6.is_editor is False
+        assert user6.is_librarian is False
+        assert user6.is_vip is False
+        assert user6.is_user is True
 
     def test_is_blocked_false_by_default(self):
         expected_date = date(1990, 1, 1)
