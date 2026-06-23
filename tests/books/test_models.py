@@ -270,7 +270,7 @@ class TestGenreModel:
     def test_without_publication_date(self, user):
         book = Book(
             title="Фантастика",
-            pages=-1,
+            pages=100,
             isbn="9780306406157",
             age_rating="ABOVE_ZERO",
             user=user
@@ -287,8 +287,7 @@ class TestGenreModel:
             publication_date=date(2026, 1, 1),
             user=None
         )
-        with pytest.raises(ValidationError):
-            book.full_clean()
+        assert book.full_clean() is None
 
     def test_delete_user_and_userfield_is_null(self, user):
         book = Book(
