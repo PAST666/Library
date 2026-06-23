@@ -159,7 +159,7 @@ class TestGenreModel:
         with pytest.raises(ValidationError):
             book.full_clean()
 
-    def isbn_is_not_unique(self, user):
+    def test_isbn_is_not_unique(self, user):
         expected_date = date(2020, 1, 1)
         book = Book(
             title="Фантастика",
@@ -196,7 +196,7 @@ class TestGenreModel:
         with pytest.raises(ValidationError):
             book.full_clean()
 
-    def age_rating_is_valid(self, user):
+    def test_age_rating_is_valid(self, user):
         expected_date = date(2020, 1, 1)
         book1 = Book(
             title="Фантастика",
@@ -513,7 +513,7 @@ class TestBookInventoryModel:
         book_inventory.save()
         assert BookInventory.objects.filter(pk=book_inventory.pk).exists()
 
-    def create_some_examples_of_book(self, user):
+    def test_create_some_examples_of_book(self, user):
         book = Book(
             title="Фантастика",
             pages=300,
