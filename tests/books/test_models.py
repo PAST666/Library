@@ -607,8 +607,9 @@ class TestBookInventoryModel:
         book_inventory.save()
         assert str(book_inventory) == "Мастер и Маргар | 9780451167316 -> AVAILABLE"
 
+
 @pytest.mark.django_db
-class BookManagerModel:
+class TestBookManagerModel:
 
     def test_get_all_books_list(self, user):
         book1 = Book(
