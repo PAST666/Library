@@ -600,12 +600,11 @@ class TestUserModel:
             email="admin@gmail.com",
             birth_date=expected_date,
             password="admin123",
-            role="ADMIN"
         )
         user.full_clean()
         user.save()
         user.refresh_from_db()
-        assert user.role == "ADMIN"
+        assert user.role == Roles.ADMIN
         assert user.is_superuser is True
 
 
