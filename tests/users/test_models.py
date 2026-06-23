@@ -46,6 +46,7 @@ class TestCountryModel:
     def test_name_field_max_valid_len_20_symbols(self):
         country = Country.objects.create(name="а" * 20, code="RU")
         country.refresh_from_db()
+        assert len(country.name) == 20
 
     def test_name_field_len_21_symbols(self):
         country = Country(name="а" * 21, code="RU")
