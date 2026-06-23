@@ -210,6 +210,7 @@ class TestAuthorModel:
         )
         author.full_clean()
         author.save()
+        author.refresh_from_db()
         assert len(author.first_name) == 150
 
     def test_len_first_name_151_symbols(self):
