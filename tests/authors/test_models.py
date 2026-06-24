@@ -80,20 +80,20 @@ class TestNationalityModel:
 @pytest.mark.django_db
 class TestAuthorModel:
 
-    def test_create_valid_author_instance(self):
-        expected_date = date(1990, 1, 1)
-        nationality = Nationality(nationality="Русский", code="RU")
-        nationality.full_clean()
-        nationality.save()
-        author = Author(
-            first_name="Иван",
-            last_name="Иванов",
-            birth_date=expected_date,
-            nationality=nationality)
+    @pytest.fixture
+    def author_data(self):
+        return {
+            "first_name": "Иван",
+            "last_name": "Иванов",
+            "birth_date": date(1990, 1, 1)
+        }
+
+    def test_create_valid_author_instance(self, author_data):
+        author = Author(**author_data)
         author.full_clean()
         author.save()
-        assert author.first_name == "иван"
-        assert author.last_name == "иванов"
+        assert author.first_name == "Иван"
+        assert author.last_name == "Иванов"
 
     def test_create_author_instance_with_empty_first_name_field(self):
         expected_date = date(1990, 1, 1)
