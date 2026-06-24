@@ -111,13 +111,11 @@ class TestAuthorModel:
         with pytest.raises(ValidationError):
             author.full_clean()
 
-    def test_create_author_instance_with_empty_first_and_last_name_fields(self):
+    def test_create_author_instance_with_empty_first_and_last_name_fields(self, author_data):
         expected_date = date(1990, 1, 1)
-        author = Author(
-            first_name="",
-            last_name="",
-            birth_date=expected_date,
-        )
+        author = Author(**author_data)
+        author.first_name = ""
+        author.last_name = ""
         with pytest.raises(ValidationError):
             author.full_clean()
 
