@@ -52,6 +52,7 @@ class Book(models.Model):
         User,
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         verbose_name="Пользователь",
         related_name="books",
     )
