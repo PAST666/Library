@@ -86,16 +86,20 @@ class TestCountryModel:
 @pytest.mark.django_db
 class TestUserModel:
 
-    def test_create_valid_user(self):
+    @pytest.fixture
+    def user_data(self):
+        return {
+            "username": "test_user",
+            "first_name": "Иван",
+            "last_name": "Иванов",
+            "email": "test@gmail.com",
+            "birth_date": date(1990, 1, 1),
+            "password": "securepass123",
+        }
+
+    def test_create_valid_user(self, user_data):
         expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123"
-        )
+        user = User(**user_data)
         user.full_clean()
         user.save()
         user.refresh_from_db()
@@ -104,19 +108,12 @@ class TestUserModel:
         assert user.last_name == "Иванов"
         assert user.email == "test@gmail.com"
         assert user.birth_date == expected_date
-        assert user.password == "securepass123"
+        assert user.check_password("securepass123") is True
         assert user.role == Roles.USER
 
-    def test_create_user_with_first_name_empty_field(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123"
-        )
+    def test_create_user_with_first_name_empty_field(self, user_data):
+        user_data['first_name'] = ""
+        user = User(**user_data)
         with pytest.raises(ValidationError):
             user.full_clean()
 
