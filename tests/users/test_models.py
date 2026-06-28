@@ -11,8 +11,15 @@ from users.models import Country, User, ActivationToken
 @pytest.mark.django_db
 class TestCountryModel:
 
-    def test_create_country_with_valid_fields(self):
-        country = Country.objects.create(name="Россия", code="RU")
+    @pytest.fixture
+    def country_data(self):
+        return {
+            "name": "Россия",
+            "code": "RU",
+        }
+
+    def test_create_country_with_valid_fields(self, country_data):
+        country = Country.objects.create(**country_data)
         country.full_clean()
         country.save()
         country.refresh_from_db()
@@ -29,15 +36,15 @@ class TestCountryModel:
         with pytest.raises(ValidationError):
             country.full_clean()
 
-    def test_unique_name_field(self):
-        country1 = Country(name="Россия", code="RU")
+    def test_unique_name_field(self, country_data):
+        country1 = Country(**country_data)
         country1.save()
         country2 = Country(name="Россия", code="BY")
         with pytest.raises(IntegrityError):
             country2.save()
 
-    def test_unique_code_field(self):
-        country1 = Country(name="Россия", code="RU")
+    def test_unique_code_field(self, country_data):
+        country1 = Country(**country_data)
         country1.save()
         country2 = Country(name="Беларусь", code="RU")
         with pytest.raises(IntegrityError):
@@ -53,8 +60,8 @@ class TestCountryModel:
         with pytest.raises(ValidationError):
             country.full_clean()
 
-    def test_len_of_code_field_is_2_symbols(self):
-        country = Country.objects.create(name="Россия", code="RU")
+    def test_len_of_code_field_is_2_symbols(self, country_data):
+        country = Country.objects.create(**country_data)
         country.full_clean()
         country.save()
         country.refresh_from_db()
@@ -70,8 +77,8 @@ class TestCountryModel:
         with pytest.raises(ValidationError):
             country.full_clean()
 
-    def test_str_method_returns_valid_value(self):
-        country = Country.objects.create(name="Россия", code="RU")
+    def test_str_method_returns_valid_value(self, country_data):
+        country = Country.objects.create(**country_data)
         country.refresh_from_db()
         assert str(country) == "Россия"
 
