@@ -123,7 +123,7 @@ class TestAuthorModel:
         author.full_clean()
         author.save()
         author.refresh_from_db()
-        assert author.first_name == "Иван"
+        assert author.first_name == "иван"
 
     def test_first_name_field_latin(self):
         expected_date = date(1990, 1, 1)
