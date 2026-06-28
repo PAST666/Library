@@ -9,6 +9,61 @@ from books.models import Genre, Book, BookInventory
 @pytest.mark.django_db
 class TestGenreModel:
 
+    @pytest.fixture
+    def book_data(self, user):
+        return {
+            "title": "Фантастика",
+            "pages": 300,
+            "publication_date": date(2020, 1, 1),
+            "isbn": "9780306406157",
+            "age_rating": "ABOVE_ZERO",
+            "user": user
+        }
+
+    @pytest.fixture
+    def book_data_2(self, user):
+        return {
+            "title": "Фантастика",
+            "pages": 300,
+            "publication_date": date(2020, 1, 1),
+            "isbn": "9780306406152",
+            "age_rating": "ABOVE_SIX",
+            "user": user
+        }
+
+    @pytest.fixture
+    def book_data_3(self, user):
+        return {
+            "title": "Фантастика",
+            "pages": 300,
+            "publication_date": date(2020, 1, 1),
+            "isbn": "9780306406153",
+            "age_rating": "ABOVE_TWELVE",
+            "user": user
+        }
+
+    @pytest.fixture
+    def book_data_4(self, user):
+        return {
+            "title": "Фантастика",
+            "pages": 300,
+            "publication_date": date(2020, 1, 1),
+            "isbn": "9780306406154",
+            "age_rating": "ABOVE_SIXTEEN",
+            "user": user
+        }
+
+    @pytest.fixture
+    def book_data_5(self, user):
+        return {
+            "title": "Фантастика",
+            "pages": 300,
+            "publication_date": date(2020, 1, 1),
+            "isbn": "9780306406155",
+            "age_rating": "ABOVE_EIGHTEEN",
+            "user": user
+        }
+
     @pytest.fixture(autouse=True)
     def setup(self):
         self.object = Genre(
@@ -18,28 +73,43 @@ class TestGenreModel:
         self.object.full_clean()
         self.object.save()
 
+    @pytest.fixture
+    def genre_data(self):
+        return {
+            "name": "Фантастика",
+        }
+
+    @pytest.fixture
+    def genre_data_2(self):
+        return {
+            "name": "Детектив",
+        }
+
     def test_genre_created(self):
         genre_from_db = Genre.objects.get(name="фантастика")
         assert genre_from_db.name == "фантастика"
 
-    def test_empty_genre(self):
-        empty_genre = Genre(name="")
+    def test_empty_genre(self, genre_data):
+        genre_data["name"] = ""
+        empty_genre = Genre(**genre_data)
         with pytest.raises(ValidationError):
             empty_genre.full_clean()
 
-    def test_unique_field(self):
-        genre = Genre(name="Фантастика")
+    def test_unique_field(self, genre_data):
+        genre = Genre(**genre_data)
         with pytest.raises(IntegrityError):
             genre.save()
 
-    def test_len_150_symbols(self):
-        genre = Genre(name="а" * 150)
+    def test_len_150_symbols(self, genre_data):
+        genre_data["name"] = "а" * 150
+        genre = Genre(**genre_data)
         genre.full_clean()
         genre.save()
         assert len(genre.name) == 150
 
-    def test_len_151_symbols(self):
-        genre = Genre(name="а" * 151)
+    def test_len_151_symbols(self, genre_data):
+        genre_data["name"] = "а" * 150
+        genre = Genre(**genre_data)
         with pytest.raises(ValidationError):
             genre.full_clean()
 
@@ -55,16 +125,8 @@ class TestGenreModel:
         genre.refresh_from_db()
         assert str(genre) == "детектив"
 
-    def test_create_book_with_correct_fields(self, author, genre, user):
-        expected_date = date(2020, 1, 1)
-        book = Book(
-            title="Фантастика",
-            pages=300,
-            publication_date=expected_date,
-            isbn="9780306406157",
-            age_rating="ABOVE_ZERO",
-            user=user
-        )
+    def test_create_book_with_correct_fields(self, author, genre, user, book_data):
+        book = Book(**book_data)
         book.full_clean()
         book.save()
         book.author.add(author)
@@ -72,180 +134,81 @@ class TestGenreModel:
         book_from_db = Book.objects.get(pk=book.pk)
         assert book_from_db.title == "Фантастика"
         assert book_from_db.pages == 300
-        assert book_from_db.publication_date == expected_date
+        assert book_from_db.publication_date == book.publication_date
         assert book_from_db.isbn == "9780306406157"
         assert book_from_db.age_rating == "ABOVE_ZERO"
         assert book_from_db.user == user
         assert book_from_db.author.filter(pk=author.pk).exists()
         assert book_from_db.genre.filter(pk=genre.pk).exists()
 
-    def test_empty_title(self):
-        expected_date = date(2020, 1, 1)
-        book = Book(
-            title="",
-            pages=300,
-            publication_date=expected_date,
-            isbn="9780306406157",
-            age_rating="ABOVE_ZERO")
+    def test_empty_title(self, book_data):
+        book_data["title"] = ""
+        book = Book(**book_data)
         with pytest.raises(ValidationError):
             book.full_clean()
 
-    def test_len_title_150_symbols(self, user):
-        expected_date = date(2020, 1, 1)
-        book = Book(
-            title="а" * 150,
-            pages=300,
-            publication_date=expected_date,
-            isbn="9780306406157",
-            age_rating="ABOVE_ZERO",
-            user=user
-        )
+    def test_len_title_150_symbols(self, user, book_data):
+        book_data["title"] = "а" * 150
+        book = Book(**book_data)
         book.full_clean()
         book.save()
         assert len(book.title) == 150
 
-    def test_len_title_151_symbols(self, user):
-        expected_date = date(2020, 1, 1)
-        book = Book(
-            title="а" * 151,
-            pages=300,
-            publication_date=expected_date,
-            isbn="9780306406157",
-            age_rating="ABOVE_ZERO",
-            user=user
-        )
+    def test_len_title_151_symbols(self, user, book_data):
+        book_data["title"] = "а" * 151
+        book = Book(**book_data)
         with pytest.raises(ValidationError):
             book.full_clean()
 
-    def test_zero_pages(self, user):
-        expected_date = date(2020, 1, 1)
-        book = Book(
-            title="Фантастика",
-            pages=0,
-            publication_date=expected_date,
-            isbn="9780306406157",
-            age_rating="ABOVE_ZERO",
-            user=user
-        )
+    def test_zero_pages(self, book_data):
+        book_data["pages"] = 0
+        book = Book(**book_data)
         with pytest.raises(ValidationError):
             book.full_clean()
 
-    def test_count_of_pages_one(self, user):
-        expected_date = date(2020, 1, 1)
-        book = Book(
-            title="Фантастика",
-            pages=1,
-            publication_date=expected_date,
-            isbn="9780306406157",
-            age_rating="ABOVE_ZERO",
-            user=user
-        )
+    def test_count_of_pages_one(self, book_data):
+        book_data["pages"] = 1
+        book = Book(**book_data)
         book.full_clean()
         book.save()
         book_from_db = Book.objects.get(pk=book.pk)
         assert book_from_db.pages == 1
         assert Book.objects.filter(pk=book.pk).exists()
 
-    def test_count_of_pages_low_zero(self, user):
-        expected_date = date(2020, 1, 1)
-        book = Book(
-            title="Фантастика",
-            pages=-1,
-            publication_date=expected_date,
-            isbn="9780306406157",
-            age_rating="ABOVE_ZERO",
-            user=user
-        )
+    def test_count_of_pages_low_zero(self, book_data):
+        book_data["pages"] = -1
+        book = Book(**book_data)
         with pytest.raises(ValidationError):
             book.full_clean()
 
-    def test_isbn_is_not_unique(self, user):
-        expected_date = date(2020, 1, 1)
-        book = Book(
-            title="Фантастика",
-            pages=300,
-            publication_date=expected_date,
-            isbn="9780306406157",
-            age_rating="ABOVE_ZERO",
-            user=user
-        )
+    def test_isbn_is_not_unique(self, book_data):
+        book = Book(**book_data)
         book.full_clean()
         book.save()
-        book2 = Book(
-            title="Фантастика",
-            pages=300,
-            publication_date=expected_date,
-            isbn="9780306406157",
-            age_rating="ABOVE_ZERO",
-            user=user
-        )
-        book2.full_clean()
+        book2 = Book(**book_data)
         with pytest.raises(IntegrityError):
             book2.save()
 
-    def test_isbn_not_valid(self, user):
-        expected_date = date(2020, 1, 1)
-        book = Book(
-            title="Фантастика",
-            pages=300,
-            publication_date=expected_date,
-            isbn="1234567890ABC",
-            age_rating="ABOVE_ZERO",
-            user=user
-        )
+    def test_isbn_not_valid(self, book_data):
+        book_data["isbn"] = "1234567890ABC"
+        book = Book(**book_data)
         with pytest.raises(ValidationError):
             book.full_clean()
 
-    def test_age_rating_is_valid(self, user):
-        expected_date = date(2020, 1, 1)
-        book1 = Book(
-            title="Фантастика",
-            pages=300,
-            publication_date=expected_date,
-            isbn="9780306406151",
-            age_rating="ABOVE_ZERO",
-            user=user
-        )
+    def test_age_rating_is_valid(self, book_data, book_data_2, book_data_3, book_data_4, book_data_5):
+        book1 = Book(**book_data)
         book1.full_clean()
         book1.save()
-        book2 = Book(
-            title="Фантастика",
-            pages=300,
-            publication_date=expected_date,
-            isbn="9780306406152",
-            age_rating="ABOVE_SIX",
-            user=user
-        )
+        book2 = Book(**book_data_2)
         book2.full_clean()
         book2.save()
-        book3 = Book(
-            title="Фантастика",
-            pages=300,
-            publication_date=expected_date,
-            isbn="9780306406153",
-            age_rating="ABOVE_TWELVE",
-            user=user
-        )
+        book3 = Book(**book_data_3)
         book3.full_clean()
         book3.save()
-        book4 = Book(
-            title="Фантастика",
-            pages=300,
-            publication_date=expected_date,
-            isbn="9780306406154",
-            age_rating="ABOVE_SIXTEEN",
-            user=user
-        )
+        book4 = Book(**book_data_4)
         book4.full_clean()
         book4.save()
-        book5 = Book(
-            title="Фантастика",
-            pages=300,
-            publication_date=expected_date,
-            isbn="9780306406155",
-            age_rating="ABOVE_EIGHTEEN",
-            user=user
-        )
+        book5 = Book(**book_data_5)
         book5.full_clean()
         book5.save()
         assert Book.objects.filter(pk=book1.pk).exists()
@@ -254,16 +217,9 @@ class TestGenreModel:
         assert Book.objects.filter(pk=book4.pk).exists()
         assert Book.objects.filter(pk=book5.pk).exists()
 
-    def test_age_rating_not_valid(self, user):
-        expected_date = date(2020, 1, 1)
-        book = Book(
-            title="Фантастика",
-            pages=300,
-            publication_date=expected_date,
-            isbn="9780306406157",
-            age_rating="ABOVE_HUNDRED",
-            user=user
-        )
+    def test_age_rating_not_valid(self, book_data):
+        book_data["age_rating"] = "ABOVE_HUNDRED"
+        book = Book(**book_data)
         with pytest.raises(ValidationError):
             book.full_clean()
 
@@ -289,73 +245,38 @@ class TestGenreModel:
         )
         assert book.full_clean() is None
 
-    def test_delete_user_and_userfield_is_null(self, user):
-        book = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780306406157",
-            age_rating="ABOVE_ZERO",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+    def test_delete_user_and_userfield_is_null(self, book_data):
+        book = Book(**book_data)
         book.full_clean()
         book.save()
-        user.delete()
+        book.user.delete()
         book.refresh_from_db()
         assert Book.objects.filter(pk=book.pk).exists()
         assert book.user is None
 
-    def test_one_book_has_two_authors(self, user, author, author2):
-        book = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780306406157",
-            age_rating="ABOVE_ZERO",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+    def test_one_book_has_two_authors(self, user, author, author2, book_data):
+        book = Book(**book_data)
         book.full_clean()
         book.save()
         book.author.set([author, author2])
         assert book.author.count() == 2
 
-    def test_one_book_has_two_genres(self, user):
-        genre1 = Genre(name="Роман")
+    def test_one_book_has_two_genres(self, book_data, genre_data, genre_data_2):
+        genre1 = Genre(**genre_data)
         genre1.full_clean()
         genre1.save()
-        genre2 = Genre(name="Детектив")
+        genre2 = Genre(**genre_data_2)
         genre2.full_clean()
         genre2.save()
-        book = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780306406157",
-            age_rating="ABOVE_ZERO",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+        book = Book(**book_data)
         book.full_clean()
         book.save()
         book.genre.set([genre1, genre2])
         assert book.genre.count() == 2
 
-    def test_is_for_child_return_true_above_zero_and_above_six(self, user):
-        book1 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780306406157",
-            age_rating="ABOVE_ZERO",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book2 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780143128540",
-            age_rating="ABOVE_SIX",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+    def test_is_for_child_return_true_above_zero_and_above_six(self, book_data, book_data_2):
+        book1 = Book(**book_data)
+        book2 = Book(**book_data_2)
         book1.full_clean()
         book2.full_clean()
         book1.save()
@@ -363,31 +284,10 @@ class TestGenreModel:
         assert book1.is_for_child
         assert book2.is_for_child
 
-    def test_is_for_child_return_false_above_twelve_and_above_sixteen(self, user):
-        book1 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780451524935",
-            age_rating="ABOVE_TWELVE",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book2 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780306406157",
-            age_rating="ABOVE_SIXTEEN",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book3 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780439023481",
-            age_rating="ABOVE_EIGHTEEN",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+    def test_is_for_child_return_false_above_twelve_and_above_sixteen(self, book_data_3, book_data_4, book_data_5):
+        book1 = Book(**book_data_3)
+        book2 = Book(**book_data_4)
+        book3 = Book(**book_data_5)
         book1.full_clean()
         book2.full_clean()
         book3.full_clean()
@@ -398,23 +298,9 @@ class TestGenreModel:
         assert not book2.is_for_child
         assert not book3.is_for_child
 
-    def test_is_for_teenager_return_true_above_twelve_and_above_sixteen(self, user):
-        book1 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780451524935",
-            age_rating="ABOVE_TWELVE",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book2 = Book(
-            title="Детектив",
-            pages=300,
-            isbn="9780307277671",
-            age_rating="ABOVE_SIXTEEN",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+    def test_is_for_teenager_return_true_above_twelve_and_above_sixteen(self, book_data_3, book_data_4):
+        book1 = Book(**book_data_3)
+        book2 = Book(**book_data_4)
         book1.full_clean()
         book2.full_clean()
         book1.save()
@@ -422,47 +308,19 @@ class TestGenreModel:
         assert book1.is_for_teenager
         assert book2.is_for_teenager
 
-    def test_is_for_adult_return_true_above_eighteen(self, user):
-        book1 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780743273565",
-            age_rating="ABOVE_ZERO",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book2 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780545010221",
-            age_rating="ABOVE_SIX",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book3 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780061120084",
-            age_rating="ABOVE_TWELVE",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book4 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780345339683",
-            age_rating="ABOVE_SIXTEEN",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book5 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780743273572",
-            age_rating="ABOVE_EIGHTEEN",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+    def test_is_for_adult_return_true_above_eighteen(
+            self,
+            book_data,
+            book_data_2,
+            book_data_3,
+            book_data_4,
+            book_data_5
+    ):
+        book1 = Book(**book_data)
+        book2 = Book(**book_data_2)
+        book3 = Book(**book_data_3)
+        book4 = Book(**book_data_4)
+        book5 = Book(**book_data_5)
         book1.full_clean()
         book2.full_clean()
         book3.full_clean()
@@ -479,15 +337,9 @@ class TestGenreModel:
         assert not book4.is_for_adult
         assert book5.is_for_adult
 
-    def test_str_returns_correct_value(self, user):
-        book = Book(
-            title="Мастер и Маргарита",
-            pages=300,
-            isbn="9780545010221",
-            age_rating="ABOVE_ZERO",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+    def test_str_returns_correct_value(self, book_data):
+        book_data["title"] = "Мастер и Маргарита"
+        book = Book(**book_data)
         book.full_clean()
         book.save()
         assert str(book) == "Мастер и Маргарита"
