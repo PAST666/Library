@@ -92,8 +92,8 @@ class TestAuthorModel:
         author = Author(**author_data)
         author.full_clean()
         author.save()
-        assert author.first_name == "Иван"
-        assert author.last_name == "Иванов"
+        assert author.first_name == "иван"
+        assert author.last_name == "иванов"
 
     def test_create_author_instance_with_empty_first_name_field(self):
         expected_date = date(1990, 1, 1)
