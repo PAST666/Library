@@ -161,7 +161,7 @@ class TestUserModel:
 
     def test_create_valid_user(self, user_data):
         expected_date = date(1990, 1, 1)
-        user = User(**user_data)
+        user = User.objects.create_user(**user_data)
         user.full_clean()
         user.save()
         user.refresh_from_db()
@@ -243,15 +243,13 @@ class TestUserModel:
 
     def test_invalid_phone_number_field(self, user_data):
         user_data["phone_number"] = "12345"
-        user = User(**user_data)
-        user.full_clean()
+        user = User.objects.create_user(**user_data)
         with pytest.raises(ValidationError):
             user.full_clean()
 
     def test_invalid_phone_number_field_with_suffix(self, user_data):
         user_data["phone_number"] = "+79001234567abc"
-        user = User(**user_data)
-        user.full_clean()
+        user = User.objects.create_user(**user_data)
         with pytest.raises(ValidationError):
             user.full_clean()
 
