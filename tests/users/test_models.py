@@ -87,12 +87,74 @@ class TestCountryModel:
 class TestUserModel:
 
     @pytest.fixture
+    def country_data(self):
+        return {
+            "name": "Россия",
+            "code": "RU",
+        }
+
+    @pytest.fixture
     def user_data(self):
         return {
             "username": "test_user",
             "first_name": "Иван",
             "last_name": "Иванов",
             "email": "test@gmail.com",
+            "birth_date": date(1990, 1, 1),
+            "password": "securepass123",
+        }
+
+    @pytest.fixture
+    def user_data_2(self):
+        return {
+            "username": "test_user2",
+            "first_name": "Иван",
+            "last_name": "Иванов",
+            "email": "test@yandex.ru",
+            "birth_date": date(1990, 1, 1),
+            "password": "securepass123",
+        }
+
+    @pytest.fixture
+    def user_data_3(self):
+        return {
+            "username": "test_user3",
+            "first_name": "Иван",
+            "last_name": "Иванов",
+            "email": "test@ya.ru",
+            "birth_date": date(1990, 1, 1),
+            "password": "securepass123",
+        }
+
+    @pytest.fixture
+    def user_data_4(self):
+        return {
+            "username": "test_user4",
+            "first_name": "Иван",
+            "last_name": "Иванов",
+            "email": "test@mail.ru",
+            "birth_date": date(1990, 1, 1),
+            "password": "securepass123",
+        }
+
+    @pytest.fixture
+    def user_data_5(self):
+        return {
+            "username": "test_user5",
+            "first_name": "Иван",
+            "last_name": "Иванов",
+            "email": "test@yahoo.com",
+            "birth_date": date(1990, 1, 1),
+            "password": "securepass123",
+        }
+
+    @pytest.fixture
+    def user_data_6(self):
+        return {
+            "username": "test_user6",
+            "first_name": "Иван",
+            "last_name": "Иванов",
+            "email": "test@outlook.com",
             "birth_date": date(1990, 1, 1),
             "password": "securepass123",
         }
@@ -117,117 +179,39 @@ class TestUserModel:
         with pytest.raises(ValidationError):
             user.full_clean()
 
-    def test_create_user_with_last_name_empty_field(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123"
-        )
+    def test_create_user_with_last_name_empty_field(self, user_data):
+        user_data["last_name"] = ""
+        user = User(**user_data)
         with pytest.raises(ValidationError):
             user.full_clean()
 
-    def test_first_name_field_language(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Ivan",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123"
-        )
+    def test_first_name_field_language(self, user_data):
+        user_data["first_name"] = "Ivan"
+        user = User(**user_data)
         with pytest.raises(ValidationError):
             user.full_clean()
 
-    def test_first_name_field_contains_numbers(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван123",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123"
-        )
+    def test_first_name_field_contains_numbers(self, user_data):
+        user_data["first_name"] = "Иван123"
+        user = User(**user_data)
         with pytest.raises(ValidationError):
             user.full_clean()
 
-    def test_email_field_unique(self):
-        expected_date = date(1990, 1, 1)
-        user1 = User(
-            username="test_user1",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123"
-        )
+    def test_email_field_unique(self, user_data, user_data_2):
+        user1 = User(**user_data)
         user1.save()
-        user2 = User(
-            username="test_user2",
-            first_name="Андрей",
-            last_name="Белов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass345"
-        )
+        user_data_2["email"] = "test@gmail.com"
+        user2 = User(**user_data_2)
         with pytest.raises(IntegrityError):
             user2.save()
 
-    def test_different_emails(self):
-        expected_date = date(1990, 1, 1)
-        user1 = User.objects.create(
-            username="test_user1",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123"
-        )
-        user2 = User.objects.create(
-            username="test_user2",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@yandex.ru",
-            birth_date=expected_date,
-            password="securepass123"
-        )
-        user3 = User.objects.create(
-            username="test_user3",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@ya.ru",
-            birth_date=expected_date,
-            password="securepass123"
-        )
-        user4 = User.objects.create(
-            username="test_user4",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@mail.ru",
-            birth_date=expected_date,
-            password="securepass123"
-        )
-        user5 = User.objects.create(
-            username="test_user5",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@yahoo.com",
-            birth_date=expected_date,
-            password="securepass123"
-        )
-        user6 = User.objects.create(
-            username="test_user6",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@outlook.com",
-            birth_date=expected_date,
-            password="securepass123"
-        )
+    def test_different_emails(self, user_data, user_data_2, user_data_3, user_data_4, user_data_5, user_data_6):
+        user1 = User.objects.create(**user_data)
+        user2 = User.objects.create(**user_data_2)
+        user3 = User.objects.create(**user_data_3)
+        user4 = User.objects.create(**user_data_4)
+        user5 = User.objects.create(**user_data_5)
+        user6 = User.objects.create(**user_data_6)
         user1.full_clean()
         user2.full_clean()
         user3.full_clean()
@@ -235,122 +219,55 @@ class TestUserModel:
         user5.full_clean()
         user6.full_clean()
 
-    def test_email_not_valid_field(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="user@protonmail.com",
-            birth_date=expected_date,
-            password="securepass123"
-        )
+    def test_email_not_valid_field(self, user_data):
+        user_data["email"] = "user@protonmail.com"
+        user = User(**user_data)
         with pytest.raises(ValidationError):
             user.full_clean()
 
-    def test_not_correct_email(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="not-an-email",
-            birth_date=expected_date,
-            password="securepass123"
-        )
+    def test_not_correct_email(self, user_data):
+        user_data["email"] = "not-an-email"
+        user = User(**user_data)
         with pytest.raises(ValidationError):
             user.full_clean()
 
-    def test_create_user_with_phone_number_field(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-            phone_number="+79001234567"
-        )
+    def test_create_user_with_phone_number_field(self, user_data):
+        user_data["phone_number"] = "+79001234567"
+        user = User(**user_data)
         user.full_clean()
 
-    def test_create_user_with_phone_number_field_begins_from_8(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-            phone_number="89001234567"
-        )
+    def test_create_user_with_phone_number_field_begins_from_8(self, user_data):
+        user_data["phone_number"] = "89001234567"
+        user = User(**user_data)
         user.full_clean()
 
-    def test_invalid_phone_number_field(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-            phone_number="12345"
-        )
+    def test_invalid_phone_number_field(self, user_data):
+        user_data["phone_number"] = "12345"
+        user = User(**user_data)
+        user.full_clean()
         with pytest.raises(ValidationError):
             user.full_clean()
 
-    def test_invalid_phone_number_field_with_suffix(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-            phone_number="+79001234567abc"
-        )
+    def test_invalid_phone_number_field_with_suffix(self, user_data):
+        user_data["phone_number"] = "+79001234567abc"
+        user = User(**user_data)
+        user.full_clean()
         with pytest.raises(ValidationError):
             user.full_clean()
 
-    def test_create_user_phone_number_field(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-        )
+    def test_create_user_phone_number_field(self, user_data):
+        user = User(**user_data)
         user.full_clean()
         user.save()
         user.refresh_from_db()
         assert user.phone_number is None
 
-    def test_phone_number_field_unique(self):
-        expected_date = date(1990, 1, 1)
-        user1 = User(
-            username="test_user1",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test1@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-            phone_number="+79001234567"
-        )
+    def test_phone_number_field_unique(self, user_data, user_data_2):
+        user_data["phone_number"] = "+79001234567"
+        user1 = User(**user_data)
         user1.save()
-        user2 = User(
-            username="test_user2",
-            first_name="Андрей",
-            last_name="Белов",
-            email="test2@gmail.com",
-            birth_date=expected_date,
-            password="securepass345",
-            phone_number="+79001234567"
-        )
+        user_data_2["phone_number"] = "+79001234567"
+        user2 = User(**user_data_2)
         with pytest.raises(IntegrityError):
             user2.save()
 
@@ -366,138 +283,61 @@ class TestUserModel:
         with pytest.raises(ValidationError):
             user.full_clean()
 
-    def test_birth_date_field_returns_valid_age(self):
+    def test_birth_date_field_returns_valid_age(self, user_data):
         today = date.today()
         try:
             expected_date = today.replace(year=today.year - 30)
         except ValueError:
             expected_date = today.replace(year=today.year - 30, day=28)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-        )
+        user_data["birth_date"] = expected_date
+        user = User(**user_data)
         user.full_clean()
         user.save()
         user.refresh_from_db()
         assert user.age == 30
 
-    def test_age_returns_none(self):
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=None,
-            password="securepass123",
-            phone_number="+79001234567"
-        )
+    def test_age_returns_none(self, user_data):
+        user_data["birth_date"] = None
+        user = User(**user_data)
         assert user.age is None
 
-    def test_birth_date_is_later_than_today(self):
+    def test_birth_date_is_later_than_today(self, user_data):
         today = date.today()
         try:
             future_date = today.replace(year=today.year + 1)
         except ValueError:
             future_date = today.replace(year=today.year + 1, day=28)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=future_date,
-            password="securepass123",
-        )
+        user_data["birth_date"] = future_date
+        user = User(**user_data)
         with pytest.raises(ValidationError):
             user.full_clean()
 
-    def test_full_name_returns_valid_value(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123"
-        )
+    def test_full_name_returns_valid_value(self, user_data):
+        user = User(**user_data)
         user.full_clean()
         assert user.full_name == "Иванов Иван"
 
-    def test_default_role_is_user(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123"
-        )
+    def test_default_role_is_user(self, user_data):
+        user = User(**user_data)
         user.full_clean()
         user.save()
         user.refresh_from_db()
         assert user.role == "USER"
 
-    def test_check_roles(self):
-        expected_date = date(1990, 1, 1)
-        user1 = User.objects.create(
-            username="test_user1",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test1@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-            role="ADMIN"
-        )
-        user2 = User.objects.create(
-            username="test_user2",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test2@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-            role="MODERATOR"
-        )
-        user3 = User.objects.create(
-            username="test_user3",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test3@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-            role="EDITOR"
-        )
-        user4 = User.objects.create(
-            username="test_user4",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test4@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-            role="LIBRARIAN"
-        )
-        user5 = User.objects.create(
-            username="test_user5",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test5@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-            role="VIP"
-        )
-        user6 = User.objects.create(
-            username="test_user6",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test6@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-            role="USER"
-        )
+    def test_check_roles(self, user_data, user_data_2, user_data_3, user_data_4, user_data_5, user_data_6):
+        user_data["role"] = Roles.ADMIN
+        user1 = User.objects.create(**user_data)
+        user_data_2["role"] = Roles.MODERATOR
+        user2 = User.objects.create(**user_data_2)
+        user_data_3["role"] = Roles.EDITOR
+        user3 = User.objects.create(**user_data_3)
+        user_data_4["role"] = Roles.LIBRARIAN
+        user4 = User.objects.create(**user_data_4)
+        user_data_5["role"] = Roles.VIP
+        user5 = User.objects.create(**user_data_5)
+        user_data_6["role"] = Roles.USER
+        user6 = User.objects.create(**user_data_6)
+
         user1.full_clean()
         user2.full_clean()
         user3.full_clean()
@@ -547,51 +387,27 @@ class TestUserModel:
         assert user6.is_vip is False
         assert user6.is_user is True
 
-    def test_is_blocked_false_by_default(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user1",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test1@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-        )
+    def test_is_blocked_false_by_default(self, user_data):
+        user = User(**user_data)
         user.full_clean()
         user.save()
         user.refresh_from_db()
         assert user.is_blocked is False
 
-    def test_country_field_becomes_none_after_delete(self):
-        expected_date = date(1990, 1, 1)
-        country = Country.objects.create(name="Россия", code="RU")
+    def test_country_field_becomes_none_after_delete(self, country_data, user_data):
+        country = Country.objects.create(**country_data)
         country.full_clean()
         country.save()
-        user = User(
-            username="test_user1",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test1@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-            country=country
-        )
+        user_data["country"] = country
+        user = User(**user_data)
         user.full_clean()
         user.save()
         country.delete()
         user.refresh_from_db()
         assert user.country is None
 
-    def test_str_method_returns_username(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test1@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-        )
+    def test_str_method_returns_username(self, user_data):
+        user = User(**user_data)
         user.full_clean()
         user.save()
         assert str(user) == "test_user"
