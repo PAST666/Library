@@ -9,8 +9,15 @@ from authors.models import Nationality, Author
 @pytest.mark.django_db
 class TestNationalityModel:
 
-    def test_create_nationality_with_valid_fields(self):
-        nationality = Nationality(nationality="Русский", code="RU")
+    @pytest.fixture
+    def nationality_data(self):
+        return {
+            "nationality": "Русский",
+            "code": "RU",
+        }
+
+    def test_create_nationality_with_valid_fields(self, nationality_data):
+        nationality = Nationality(**nationality_data)
         nationality.full_clean()
         nationality.save()
         nationality.refresh_from_db()
@@ -27,8 +34,8 @@ class TestNationalityModel:
         with pytest.raises(ValidationError):
             nationality.full_clean()
 
-    def test_field_nationality_unique(self):
-        nationality1 = Nationality(nationality="Русский", code="RU")
+    def test_field_nationality_unique(self, nationality_data):
+        nationality1 = Nationality(**nationality_data)
         nationality1.save()
         nationality2 = Nationality(nationality="Русский", code="BY")
         with pytest.raises(IntegrityError):
@@ -53,8 +60,8 @@ class TestNationalityModel:
         with pytest.raises(ValidationError):
             nationality.full_clean()
 
-    def test_len_code_field_2_symbols(self):
-        nationality = Nationality(nationality="Русский", code="RU")
+    def test_len_code_field_2_symbols(self, nationality_data):
+        nationality = Nationality(**nationality_data)
         nationality.full_clean()
         nationality.save()
         assert len(nationality.code) == 2
@@ -69,8 +76,8 @@ class TestNationalityModel:
         with pytest.raises(ValidationError):
             nationality.full_clean()
 
-    def test_str_method_returns_correct_method(self):
-        nationality = Nationality(nationality="Русский", code="RU")
+    def test_str_method_returns_correct_method(self, nationality_data):
+        nationality = Nationality(**nationality_data)
         nationality.full_clean()
         nationality.save()
         nationality.refresh_from_db()
