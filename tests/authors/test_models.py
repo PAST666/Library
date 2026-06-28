@@ -112,24 +112,18 @@ class TestAuthorModel:
             author.full_clean()
 
     def test_create_author_instance_with_empty_first_and_last_name_fields(self, author_data):
-        expected_date = date(1990, 1, 1)
         author = Author(**author_data)
         author.first_name = ""
         author.last_name = ""
         with pytest.raises(ValidationError):
             author.full_clean()
 
-    def test_first_name_field(self):
-        expected_date = date(1990, 1, 1)
-        author = Author(
-            first_name="Иван",
-            last_name="Иванов",
-            birth_date=expected_date,
-        )
+    def test_first_name_field(self, author_data):
+        author = Author(**author_data)
         author.full_clean()
         author.save()
         author.refresh_from_db()
-        assert author.first_name == "иван"
+        assert author.first_name == "Иван"
 
     def test_first_name_field_latin(self):
         expected_date = date(1990, 1, 1)
@@ -227,32 +221,19 @@ class TestAuthorModel:
         with pytest.raises(ValidationError):
             author.full_clean()
 
-    def test_create_author_with_nationality_field_is_none(self):
-        expected_date = date(1990, 1, 1)
-        author = Author(
-            first_name="Иван",
-            last_name="Иванов",
-            birth_date=expected_date,
-            nationality=None,
-        )
+    def test_create_author_with_nationality_field_is_none(self, author_data):
+        author = Author(**author_data)
+        author.nationality = None
         author.full_clean()
         author.save()
         author.refresh_from_db()
         assert author.nationality is None
 
-    def test_delete_nationality_field_becomes_none(self):
-        expected_date = date(1990, 1, 1)
-        nationality = Nationality(nationality="Русский", code="RU")
-        nationality.full_clean()
-        nationality.save()
-        author = Author(
-            first_name="Иван",
-            last_name="Иванов",
-            birth_date=expected_date,
-            nationality=nationality,
-        )
-        author.full_clean()
-        author.save()
+    def test_delete_nationality_field_becomes_none(self,author_data):
+        nationality = Nationality.objects.create(nationality="Русский", code="RU")
+        author_data['nationality'] = nationality
+        author = Author.objects.create(**author_data)
+        assert author.nationality == nationality
         nationality.delete()
         author.refresh_from_db()
         assert author.nationality is None
