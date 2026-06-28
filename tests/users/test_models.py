@@ -432,16 +432,30 @@ class TestUserModel:
 @pytest.mark.django_db
 class TestActivationTokenModel:
 
-    def test_create_token(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-        )
+    @pytest.fixture
+    def user_data(self):
+        return {
+            "username": "test_user",
+            "first_name": "Иван",
+            "last_name": "Иванов",
+            "email": "test@gmail.com",
+            "birth_date": date(1990, 1, 1),
+            "password": "securepass123",
+        }
+
+    @pytest.fixture
+    def user_data_2(self):
+        return {
+            "username": "test_user2",
+            "first_name": "Иван",
+            "last_name": "Иванов",
+            "email": "test@yandex.ru",
+            "birth_date": date(1990, 1, 1),
+            "password": "securepass123",
+        }
+
+    def test_create_token(self, user_data):
+        user = User(**user_data)
         user.full_clean()
         user.save()
         token = ActivationToken.objects.create_for_user(user)
@@ -449,40 +463,17 @@ class TestActivationTokenModel:
         assert db_token is not None
         assert db_token.user == user
 
-    def test_token_field_is_created_automatically(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-        )
+    def test_token_field_is_created_automatically(self, user_data):
+        user = User(**user_data)
         user.full_clean()
         user.save()
         token = ActivationToken.objects.create_for_user(user)
         token.refresh_from_db()
         assert token.token is not None
 
-    def test_token_field_unique(self):
-        expected_date = date(1990, 1, 1)
-        user1 = User(
-            username="test_user1",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test1@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-        )
-        user2 = User(
-            username="test_user2",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test2@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-        )
+    def test_token_field_unique(self, user_data, user_data_2):
+        user1 = User(**user_data)
+        user2 = User(**user_data_2)
         user1.full_clean()
         user2.full_clean()
         user1.save()
@@ -493,32 +484,16 @@ class TestActivationTokenModel:
         token2.refresh_from_db()
         assert token1.token != token2.token
 
-    def test_token_is_valid_true(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-        )
+    def test_token_is_valid_true(self, user_data):
+        user = User(**user_data)
         user.full_clean()
         user.save()
         token = ActivationToken.objects.create_for_user(user)
         token.refresh_from_db()
         assert token.is_valid is True
 
-    def test_create_token_is_valid_false(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-        )
+    def test_create_token_is_valid_false(self, user_data):
+        user = User(**user_data)
         user.full_clean()
         user.save()
         token = ActivationToken.objects.create_for_user(user)
@@ -527,16 +502,8 @@ class TestActivationTokenModel:
         token.refresh_from_db()
         assert token.is_valid is False
 
-    def test_error_when_another_token_created_for_user(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-        )
+    def test_error_when_another_token_created_for_user(self, user_data):
+        user = User(**user_data)
         user.full_clean()
         user.save()
         token = ActivationToken.objects.create_for_user(user)
@@ -544,16 +511,8 @@ class TestActivationTokenModel:
         with pytest.raises(IntegrityError):
             ActivationToken.objects.create_for_user(user)
 
-    def test_token_is_deleted_when_user_is_deleted(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-        )
+    def test_token_is_deleted_when_user_is_deleted(self, user_data):
+        user = User(**user_data)
         user.full_clean()
         user.save()
         token = ActivationToken.objects.create_for_user(user)
@@ -561,31 +520,15 @@ class TestActivationTokenModel:
         token_exists = ActivationToken.objects.filter(pk=token.pk).exists()
         assert token_exists is False
 
-    def test_str_method_returns_valid_uuid_token(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-        )
+    def test_str_method_returns_valid_uuid_token(self, user_data):
+        user = User(**user_data)
         user.full_clean()
         user.save()
         token = ActivationToken.objects.create_for_user(user)
         assert str(token) == f"{user.username} -> {token.token}"
 
-    def test_time_of_expires_at_is_about_15_minutes_when_token_created(self):
-        expected_date = date(1990, 1, 1)
-        user = User(
-            username="test_user",
-            first_name="Иван",
-            last_name="Иванов",
-            email="test@gmail.com",
-            birth_date=expected_date,
-            password="securepass123",
-        )
+    def test_time_of_expires_at_is_about_15_minutes_when_token_created(self, user_data):
+        user = User(**user_data)
         user.full_clean()
         user.save()
         fix_time = timezone.now()
