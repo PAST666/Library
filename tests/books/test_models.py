@@ -3,6 +3,7 @@ from datetime import date
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
+from books.constants import Status
 from books.models import Genre, Book, BookInventory
 
 
@@ -26,7 +27,7 @@ class TestGenreModel:
             "title": "Фантастика",
             "pages": 300,
             "publication_date": date(2020, 1, 1),
-            "isbn": "9780306406152",
+            "isbn": "9785171124403",
             "age_rating": "ABOVE_SIX",
             "user": user
         }
@@ -37,7 +38,7 @@ class TestGenreModel:
             "title": "Фантастика",
             "pages": 300,
             "publication_date": date(2020, 1, 1),
-            "isbn": "9780306406153",
+            "isbn": "9785699120147",
             "age_rating": "ABOVE_TWELVE",
             "user": user
         }
@@ -48,7 +49,7 @@ class TestGenreModel:
             "title": "Фантастика",
             "pages": 300,
             "publication_date": date(2020, 1, 1),
-            "isbn": "9780306406154",
+            "isbn": "9785389062566",
             "age_rating": "ABOVE_SIXTEEN",
             "user": user
         }
@@ -59,19 +60,10 @@ class TestGenreModel:
             "title": "Фантастика",
             "pages": 300,
             "publication_date": date(2020, 1, 1),
-            "isbn": "9780306406155",
+            "isbn": "9785170906222",
             "age_rating": "ABOVE_EIGHTEEN",
             "user": user
         }
-
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        self.object = Genre(
-            name="Фантастика"
-        )
-        self.object.name = self.object.name.lower()
-        self.object.full_clean()
-        self.object.save()
 
     @pytest.fixture
     def genre_data(self):
@@ -108,7 +100,7 @@ class TestGenreModel:
         assert len(genre.name) == 150
 
     def test_len_151_symbols(self, genre_data):
-        genre_data["name"] = "а" * 150
+        genre_data["name"] = "а" * 151
         genre = Genre(**genre_data)
         with pytest.raises(ValidationError):
             genre.full_clean()
@@ -245,6 +237,7 @@ class TestGenreModel:
         )
         assert book.full_clean() is None
 
+
     def test_delete_user_and_userfield_is_null(self, book_data):
         book = Book(**book_data)
         book.full_clean()
@@ -262,7 +255,7 @@ class TestGenreModel:
         assert book.author.count() == 2
 
     def test_one_book_has_two_genres(self, book_data, genre_data, genre_data_2):
-        genre1 = Genre(**genre_data)
+        genre1 = Genre.objects.get(name="фантастика")
         genre1.full_clean()
         genre1.save()
         genre2 = Genre(**genre_data_2)
@@ -348,18 +341,27 @@ class TestGenreModel:
 @pytest.mark.django_db
 class TestBookInventoryModel:
 
-    def test_create_book_inventory(self, user):
-        book = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780545010221",
-            age_rating="ABOVE_TWELVE",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book.full_clean()
-        book.save()
-        book_inventory = BookInventory(book=book, status="AVAILABLE")
+    @pytest.fixture
+    def book_inventory_data(self, book):
+        return {
+            "book": book,
+            "status": Status.AVAILABLE,
+
+        }
+
+    @pytest.fixture
+    def book_data(self, user):
+        return {
+            "title": "Фантастика",
+            "pages": 300,
+            "publication_date": date(2020, 1, 1),
+            "isbn": "9785170906222",
+            "age_rating": "ABOVE_TWELVE",
+            "user": user
+        }
+
+    def test_create_book_inventory(self, book_inventory_data):
+        book_inventory = BookInventory(**book_inventory_data)
         book_inventory.full_clean()
         book_inventory.save()
         assert BookInventory.objects.filter(pk=book_inventory.pk).exists()
