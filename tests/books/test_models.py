@@ -3,79 +3,11 @@ from datetime import date
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
-from books.constants import Status
 from books.models import Genre, Book, BookInventory
 
 
 @pytest.mark.django_db
 class TestGenreModel:
-
-    @pytest.fixture
-    def book_data(self, user):
-        return {
-            "title": "Фантастика",
-            "pages": 300,
-            "publication_date": date(2020, 1, 1),
-            "isbn": "9780306406157",
-            "age_rating": "ABOVE_ZERO",
-            "user": user
-        }
-
-    @pytest.fixture
-    def book_data_2(self, user):
-        return {
-            "title": "Фантастика",
-            "pages": 300,
-            "publication_date": date(2020, 1, 1),
-            "isbn": "9785171124403",
-            "age_rating": "ABOVE_SIX",
-            "user": user
-        }
-
-    @pytest.fixture
-    def book_data_3(self, user):
-        return {
-            "title": "Фантастика",
-            "pages": 300,
-            "publication_date": date(2020, 1, 1),
-            "isbn": "9785699120147",
-            "age_rating": "ABOVE_TWELVE",
-            "user": user
-        }
-
-    @pytest.fixture
-    def book_data_4(self, user):
-        return {
-            "title": "Фантастика",
-            "pages": 300,
-            "publication_date": date(2020, 1, 1),
-            "isbn": "9785389062566",
-            "age_rating": "ABOVE_SIXTEEN",
-            "user": user
-        }
-
-    @pytest.fixture
-    def book_data_5(self, user):
-        return {
-            "title": "Фантастика",
-            "pages": 300,
-            "publication_date": date(2020, 1, 1),
-            "isbn": "9785170906222",
-            "age_rating": "ABOVE_EIGHTEEN",
-            "user": user
-        }
-
-    @pytest.fixture
-    def genre_data(self):
-        return {
-            "name": "Фантастика",
-        }
-
-    @pytest.fixture
-    def genre_data_2(self):
-        return {
-            "name": "Детектив",
-        }
 
     def test_genre_created(self, genre_data):
         genre = Genre(**genre_data)
@@ -346,30 +278,6 @@ class TestGenreModel:
 @pytest.mark.django_db
 class TestBookInventoryModel:
 
-
-    @pytest.fixture
-    def book_inventory_data(self, book):
-        return {
-            "book": book,
-            "status": Status.AVAILABLE,
-
-        }
-
-    @pytest.fixture
-    def book_data(self, user):
-        return {
-            "title": "Фантастика",
-            "pages": 300,
-            "publication_date": date(2020, 1, 1),
-            "isbn": "9785170906222",
-            "age_rating": "ABOVE_TWELVE",
-            "user": user
-        }
-
-    @pytest.fixture
-    def book(self, book_data):
-        return Book.objects.create(**book_data)
-
     def test_create_book_inventory(self, book_inventory_data):
         book_inventory = BookInventory(**book_inventory_data)
         book_inventory.full_clean()
@@ -444,39 +352,6 @@ class TestBookInventoryModel:
 @pytest.mark.django_db
 class TestBookManagerModel:
 
-    @pytest.fixture
-    def book_data(self, user):
-        return {
-            "title": "Война и мир",
-            "pages": 300,
-            "publication_date": date(2016, 1, 1),
-            "isbn": "9785170906222",
-            "age_rating": "ABOVE_TWELVE",
-            "user": user
-        }
-
-    @pytest.fixture
-    def book_data_2(self, user):
-        return {
-            "title": "Анна Каренина",
-            "pages": 400,
-            "publication_date": date(2023, 1, 1),
-            "isbn": "9780141439518",
-            "age_rating": "ABOVE_TWELVE",
-            "user": user
-        }
-
-    @pytest.fixture
-    def book_data_3(self, user):
-        return {
-            "title": "Робинзон Крузо",
-            "pages": 100,
-            "publication_date": date(2026, 1, 1),
-            "isbn": "9785389062566",
-            "age_rating": "ABOVE_EIGHTEEN",
-            "user": user
-        }
-
     def test_get_all_books_list(self, book_data, book_data_2, book_data_3):
         book1 = Book(**book_data)
         book2 = Book(**book_data_2)
@@ -535,6 +410,7 @@ class TestBookManagerModel:
         assert list(Book.objects.reserved()) == [book3]
 
     def test_search_books(self, book_data, book_data_2):
+        book_data["title"] = "Война и мир"
         book1 = Book.objects.create(**book_data)
         Book.objects.create(**book_data_2)
         search_result = Book.objects.search_books(title="Война")
