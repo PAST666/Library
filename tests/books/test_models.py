@@ -1,5 +1,4 @@
 import pytest
-from datetime import date
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
@@ -163,15 +162,9 @@ class TestGenreModel:
         with pytest.raises(ValidationError):
             book.full_clean()
 
-    def test_create_book_without_user(self):
-        book = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780306406157",
-            age_rating="ABOVE_ZERO",
-            publication_date=date(2026, 1, 1),
-            user=None
-        )
+    def test_create_book_without_user(self, book_data):
+        book_data["user"] = None
+        book = Book(**book_data)
         assert book.full_clean() is None
 
 
@@ -332,21 +325,15 @@ class TestBookInventoryModel:
         with pytest.raises(ValidationError):
             book_inventory.full_clean()
 
-    def test_str_at_created_book(self, user):
-        book = Book(
-            title="Мастер и Маргарита",
-            pages=300,
-            isbn="9780451167316",
-            age_rating="ABOVE_TWELVE",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+    def test_str_at_created_book(self, book_data):
+        book_data["title"] = "Мастер и Маргарита"
+        book = Book(**book_data)
         book.full_clean()
         book.save()
         book_inventory = BookInventory(book=book, status="AVAILABLE")
         book_inventory.full_clean()
         book_inventory.save()
-        assert str(book_inventory) == "Мастер и Маргар | 9780451167316 -> AVAILABLE"
+        assert str(book_inventory) == "Мастер и Маргар | 9780306406157 -> AVAILABLE"
 
 
 @pytest.mark.django_db
