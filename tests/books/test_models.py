@@ -77,8 +77,11 @@ class TestGenreModel:
             "name": "Детектив",
         }
 
-    def test_genre_created(self):
-        genre_from_db = Genre.objects.get(name="фантастика")
+    def test_genre_created(self, genre_data):
+        genre = Genre(**genre_data)
+        genre.full_clean()
+        genre.save()
+        genre_from_db = Genre.objects.get(pk=genre.pk)
         assert genre_from_db.name == "фантастика"
 
     def test_empty_genre(self, genre_data):
@@ -88,9 +91,11 @@ class TestGenreModel:
             empty_genre.full_clean()
 
     def test_unique_field(self, genre_data):
-        genre = Genre(**genre_data)
+        genre1 = Genre(**genre_data)
+        genre1.save()
+        genre2 = Genre(**genre_data)
         with pytest.raises(IntegrityError):
-            genre.save()
+            genre2.save()
 
     def test_len_150_symbols(self, genre_data):
         genre_data["name"] = "а" * 150
@@ -255,7 +260,7 @@ class TestGenreModel:
         assert book.author.count() == 2
 
     def test_one_book_has_two_genres(self, book_data, genre_data, genre_data_2):
-        genre1 = Genre.objects.get(name="фантастика")
+        genre1 = Genre(**genre_data)
         genre1.full_clean()
         genre1.save()
         genre2 = Genre(**genre_data_2)
@@ -341,6 +346,7 @@ class TestGenreModel:
 @pytest.mark.django_db
 class TestBookInventoryModel:
 
+
     @pytest.fixture
     def book_inventory_data(self, book):
         return {
@@ -360,21 +366,18 @@ class TestBookInventoryModel:
             "user": user
         }
 
+    @pytest.fixture
+    def book(self, book_data):
+        return Book.objects.create(**book_data)
+
     def test_create_book_inventory(self, book_inventory_data):
         book_inventory = BookInventory(**book_inventory_data)
         book_inventory.full_clean()
         book_inventory.save()
         assert BookInventory.objects.filter(pk=book_inventory.pk).exists()
 
-    def test_create_some_examples_of_book(self, user):
-        book = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780307277671",
-            age_rating="ABOVE_TWELVE",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+    def test_create_some_examples_of_book(self, book_data):
+        book = Book(**book_data)
         book.full_clean()
         book.save()
         book_inventory1 = BookInventory(book=book, status="AVAILABLE")
@@ -390,15 +393,8 @@ class TestBookInventoryModel:
         assert BookInventory.objects.filter(pk=book_inventory2.pk).exists()
         assert BookInventory.objects.filter(pk=book_inventory3.pk).exists()
 
-    def test_valid_records_book_inventories_with_all_statuses(self, user):
-        book = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780451167316",
-            age_rating="ABOVE_TWELVE",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+    def test_valid_records_book_inventories_with_all_statuses(self, book_data):
+        book = Book(**book_data)
         book.full_clean()
         book.save()
         book_inventory1 = BookInventory(book=book, status="AVAILABLE")
@@ -414,30 +410,14 @@ class TestBookInventoryModel:
         assert BookInventory.objects.filter(pk=book_inventory2.pk).exists()
         assert BookInventory.objects.filter(pk=book_inventory3.pk).exists()
 
-    def test_create_record_with_not_valid_status(self, user):
-        book = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780451167316",
-            age_rating="ABOVE_TWELVE",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book.full_clean()
-        book.save()
-        book_inventory = BookInventory(book=book, status="LOST")
+    def test_create_record_with_not_valid_status(self, book_inventory_data):
+        book_inventory_data["status"] = "LOST"
+        book_inventory = BookInventory(**book_inventory_data)
         with pytest.raises(ValidationError):
             book_inventory.full_clean()
 
-    def test_create_record_without_status(self, user):
-        book = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780451167316",
-            age_rating="ABOVE_TWELVE",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+    def test_create_record_without_status(self, book_data):
+        book = Book(**book_data)
         book.full_clean()
         book.save()
         book_inventory = BookInventory(book=book)
@@ -464,31 +444,43 @@ class TestBookInventoryModel:
 @pytest.mark.django_db
 class TestBookManagerModel:
 
-    def test_get_all_books_list(self, user):
-        book1 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780451167316",
-            age_rating="ABOVE_TWELVE",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book2 = Book(
-            title="Детектив",
-            pages=400,
-            isbn="9780618640157",
-            age_rating="ABOVE_SIXTEEN",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book3 = Book(
-            title="Приключения",
-            pages=200,
-            isbn="9780743273572",
-            age_rating="ABOVE_EIGHTEEN",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+    @pytest.fixture
+    def book_data(self, user):
+        return {
+            "title": "Война и мир",
+            "pages": 300,
+            "publication_date": date(2016, 1, 1),
+            "isbn": "9785170906222",
+            "age_rating": "ABOVE_TWELVE",
+            "user": user
+        }
+
+    @pytest.fixture
+    def book_data_2(self, user):
+        return {
+            "title": "Анна Каренина",
+            "pages": 400,
+            "publication_date": date(2023, 1, 1),
+            "isbn": "9780141439518",
+            "age_rating": "ABOVE_TWELVE",
+            "user": user
+        }
+
+    @pytest.fixture
+    def book_data_3(self, user):
+        return {
+            "title": "Робинзон Крузо",
+            "pages": 100,
+            "publication_date": date(2026, 1, 1),
+            "isbn": "9785389062566",
+            "age_rating": "ABOVE_EIGHTEEN",
+            "user": user
+        }
+
+    def test_get_all_books_list(self, book_data, book_data_2, book_data_3):
+        book1 = Book(**book_data)
+        book2 = Book(**book_data_2)
+        book3 = Book(**book_data_3)
         book1.full_clean()
         book2.full_clean()
         book3.full_clean()
@@ -497,31 +489,10 @@ class TestBookManagerModel:
         book3.save()
         assert set(Book.objects.get_all_books_list()) == {book1, book2, book3}
 
-    def test_return_available_only(self, user):
-        book1 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780451167316",
-            age_rating="ABOVE_TWELVE",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book2 = Book(
-            title="Детектив",
-            pages=400,
-            isbn="9780743273572",
-            age_rating="ABOVE_SIXTEEN",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book3 = Book(
-            title="Приключения",
-            pages=200,
-            isbn="9780451524935",
-            age_rating="ABOVE_EIGHTEEN",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+    def test_return_available_only(self, book_data, book_data_2, book_data_3):
+        book1 = Book(**book_data)
+        book2 = Book(**book_data_2)
+        book3 = Book(**book_data_3)
         book1.full_clean()
         book2.full_clean()
         book3.full_clean()
@@ -533,31 +504,10 @@ class TestBookManagerModel:
         BookInventory.objects.create(book=book3, status="RESERVED")
         assert list(Book.objects.available()) == [book1]
 
-    def test_return_busy_only(self, user):
-        book1 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780451167316",
-            age_rating="ABOVE_TWELVE",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book2 = Book(
-            title="Детектив",
-            pages=400,
-            isbn="9780451524935",
-            age_rating="ABOVE_SIXTEEN",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book3 = Book(
-            title="Приключения",
-            pages=200,
-            isbn="9780439023481",
-            age_rating="ABOVE_EIGHTEEN",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+    def test_return_busy_only(self, book_data, book_data_2, book_data_3):
+        book1 = Book(**book_data)
+        book2 = Book(**book_data_2)
+        book3 = Book(**book_data_3)
         book1.full_clean()
         book2.full_clean()
         book3.full_clean()
@@ -569,31 +519,10 @@ class TestBookManagerModel:
         BookInventory.objects.create(book=book3, status="RESERVED")
         assert list(Book.objects.busy()) == [book2]
 
-    def test_return_reserved_only(self, user):
-        book1 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780451167316",
-            age_rating="ABOVE_TWELVE",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book2 = Book(
-            title="Детектив",
-            pages=400,
-            isbn="9780439023481",
-            age_rating="ABOVE_SIXTEEN",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book3 = Book(
-            title="Приключения",
-            pages=200,
-            isbn="9780141439518",
-            age_rating="ABOVE_EIGHTEEN",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+    def test_return_reserved_only(self, book_data, book_data_2, book_data_3):
+        book1 = Book(**book_data)
+        book2 = Book(**book_data_2)
+        book3 = Book(**book_data_3)
         book1.full_clean()
         book2.full_clean()
         book3.full_clean()
@@ -605,77 +534,25 @@ class TestBookManagerModel:
         BookInventory.objects.create(book=book3, status="RESERVED")
         assert list(Book.objects.reserved()) == [book3]
 
-    def test_search_books(self, user):
-        book1 = Book(
-            title="Война и мир",
-            pages=300,
-            isbn="9780451167316",
-            age_rating="ABOVE_TWELVE",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book2 = Book(
-            title="Анна Каренина",
-            pages=400,
-            isbn="9780141439518",
-            age_rating="ABOVE_SIXTEEN",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book1.full_clean()
-        book2.full_clean()
-        book1.save()
-        book2.save()
-        assert list(Book.objects.search_books(title="война")) == [book1]
+    def test_search_books(self, book_data, book_data_2):
+        book1 = Book.objects.create(**book_data)
+        Book.objects.create(**book_data_2)
+        search_result = Book.objects.search_books(title="Война")
+        assert list(search_result) == [book1]
 
-    def test_search_books_unknown_filter(self, user):
-        book1 = Book(
-            title="Война и мир",
-            pages=300,
-            isbn="9780451167316",
-            age_rating="ABOVE_TWELVE",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
-        book2 = Book(
-            title="Анна Каренина",
-            pages=400,
-            isbn="9780439023481",
-            age_rating="ABOVE_SIXTEEN",
-            publication_date=date(2026, 1, 1),
-            user=user
-        )
+    def test_search_books_unknown_filter(self, book_data, book_data_2):
+        book1 = Book(**book_data)
+        book2 = Book(**book_data_2)
         book1.full_clean()
         book2.full_clean()
         book1.save()
         book2.save()
         assert set(Book.objects.search_books(unknown_field="значение")) == {book1, book2}
 
-    def test_recent_five_years(self, user):
-        book1 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780451167316",
-            publication_date=date(2016, 1, 1),
-            age_rating="ABOVE_TWELVE",
-            user=user
-        )
-        book2 = Book(
-            title="Детектив",
-            pages=400,
-            isbn="9780141439518",
-            publication_date=date(2023, 1, 1),
-            age_rating="ABOVE_SIXTEEN",
-            user=user
-        )
-        book3 = Book(
-            title="Приключения",
-            pages=200,
-            isbn="9780439023481",
-            publication_date=date(2026, 1, 1),
-            age_rating="ABOVE_EIGHTEEN",
-            user=user
-        )
+    def test_recent_five_years(self, book_data, book_data_2, book_data_3):
+        book1 = Book(**book_data)
+        book2 = Book(**book_data_2)
+        book3 = Book(**book_data_3)
         book1.full_clean()
         book2.full_clean()
         book3.full_clean()
@@ -684,31 +561,10 @@ class TestBookManagerModel:
         book3.save()
         assert set(Book.objects.recent()) == {book2, book3}
 
-    def test_recent_one_year(self, user):
-        book1 = Book(
-            title="Фантастика",
-            pages=300,
-            isbn="9780451167316",
-            publication_date=date(2016, 1, 1),
-            age_rating="ABOVE_TWELVE",
-            user=user
-        )
-        book2 = Book(
-            title="Детектив",
-            pages=400,
-            isbn="9780439023481",
-            publication_date=date(2023, 1, 1),
-            age_rating="ABOVE_SIXTEEN",
-            user=user
-        )
-        book3 = Book(
-            title="Приключения",
-            pages=200,
-            isbn="9780141439518",
-            publication_date=date(2026, 1, 1),
-            age_rating="ABOVE_EIGHTEEN",
-            user=user
-        )
+    def test_recent_one_year(self, book_data, book_data_2, book_data_3):
+        book1 = Book(**book_data)
+        book2 = Book(**book_data_2)
+        book3 = Book(**book_data_3)
         book1.full_clean()
         book2.full_clean()
         book3.full_clean()
