@@ -14,7 +14,7 @@ class Command(BaseCommand):
             "filepath",
             nargs="?",
             default="data/countries.json",
-            help="Путь до файла со странами"
+            help="Путь до файла со странами",
         )
 
     def handle(self, *args, **kwargs):
@@ -22,11 +22,15 @@ class Command(BaseCommand):
 
         try:
             self.upload_countries(filepath)
-            self.stdout.write(self.style.SUCCESS("Список стран успешно загружен"))
+            self.stdout.write(
+                self.style.SUCCESS("Список стран успешно загружен")
+            )
         except FileNotFoundError:
             self.stdout.write(self.style.ERROR(f"Файл '{filepath}' не найден"))
         except json.JSONDecodeError as e:
-            self.stdout.write(self.style.ERROR(f"Ошибка декодирования JSON: {e}"))
+            self.stdout.write(
+                self.style.ERROR(f"Ошибка декодирования JSON: {e}")
+            )
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Произошла ошибка: {e}"))
 
@@ -46,5 +50,8 @@ class Command(BaseCommand):
     def upload_countries_from_json(self, filepath: str) -> None:
         with open(filepath, "r", encoding="utf-8") as f:
             countries_data = json.load(f)
-        countries = [Country(name=country["name"], code=country["code"]) for country in countries_data]
+        countries = [
+            Country(name=country["name"], code=country["code"])
+            for country in countries_data
+        ]
         Country.objects.bulk_create(countries)

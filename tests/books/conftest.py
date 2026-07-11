@@ -13,7 +13,7 @@ def author():
     author = Author.objects.create(
         first_name="Александр",
         last_name="Пушкин",
-        birth_date=date(1811, 1, 10)
+        birth_date=date(1811, 1, 10),
     )
     return author
 
@@ -21,9 +21,7 @@ def author():
 @pytest.fixture
 def author2():
     author = Author.objects.create(
-        first_name="Лев",
-        last_name="Толстой",
-        birth_date=date(1811, 1, 10)
+        first_name="Лев", last_name="Толстой", birth_date=date(1811, 1, 10)
     )
     return author
 
@@ -36,16 +34,14 @@ def user():
         email="user@yandex.ru",
         birth_date=date(1990, 1, 1),
         role="USER",
-        password="securepass123"
+        password="securepass123",
     )
     return username
 
 
 @pytest.fixture
 def genre():
-    return Genre.objects.create(
-        name="Классика"
-    )
+    return Genre.objects.create(name="Классика")
 
 
 @pytest.fixture
@@ -83,7 +79,7 @@ def book_data(user):
         "publication_date": date(2016, 1, 1),
         "isbn": "9780306406157",
         "age_rating": "ABOVE_ZERO",
-        "user": user
+        "user": user,
     }
 
 
@@ -95,8 +91,9 @@ def book_data_2(user):
         "publication_date": date(2023, 1, 1),
         "isbn": "9785171124403",
         "age_rating": "ABOVE_SIX",
-        "user": user
+        "user": user,
     }
+
 
 @pytest.fixture
 def book_data_3(user):
@@ -106,7 +103,7 @@ def book_data_3(user):
         "publication_date": date(2026, 1, 1),
         "isbn": "9785699120147",
         "age_rating": "ABOVE_TWELVE",
-        "user": user
+        "user": user,
     }
 
 
@@ -118,7 +115,7 @@ def book_data_4(user):
         "publication_date": date(2020, 1, 1),
         "isbn": "9785389062566",
         "age_rating": "ABOVE_SIXTEEN",
-        "user": user
+        "user": user,
     }
 
 
@@ -130,5 +127,5 @@ def book_data_5(user):
         "publication_date": date(2020, 1, 1),
         "isbn": "9785170906222",
         "age_rating": "ABOVE_EIGHTEEN",
-        "user": user
+        "user": user,
     }

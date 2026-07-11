@@ -17,7 +17,7 @@ class BookAdmin(admin.ModelAdmin):
         "publication_date",
         "user",
         "isbn",
-        "age_rating"
+        "age_rating",
     )
     search_fields = (
         "title",
@@ -31,7 +31,10 @@ class BookAdmin(admin.ModelAdmin):
 
 @admin.register(BookInventory)
 class AdminBookInventory(admin.ModelAdmin):
-    list_display = ("book", "status",)
+    list_display = (
+        "book",
+        "status",
+    )
     search_fields = ("book",)
     ordering = ("book",)
     list_filter = ("status",)

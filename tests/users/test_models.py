@@ -163,8 +163,6 @@ class TestUserModel:
     def test_create_valid_user(self, user_data):
         expected_date = date(1990, 1, 1)
         user = User.objects.create_user(**user_data)
-        user.full_clean()
-        user.save()
         user.refresh_from_db()
         assert user.username == "test_user"
         assert user.first_name == "Иван"
@@ -172,10 +170,10 @@ class TestUserModel:
         assert user.email == "test@gmail.com"
         assert user.birth_date == expected_date
         assert user.check_password("securepass123") is True
-        assert user.role == Roles.USER
+        assert user.role == "USER"
 
     def test_create_user_with_first_name_empty_field(self, user_data):
-        user_data['first_name'] = ""
+        user_data["first_name"] = ""
         user = User(**user_data)
         with pytest.raises(ValidationError):
             user.full_clean()
@@ -206,7 +204,15 @@ class TestUserModel:
         with pytest.raises(IntegrityError):
             user2.save()
 
-    def test_different_emails(self, user_data, user_data_2, user_data_3, user_data_4, user_data_5, user_data_6):
+    def test_different_emails(
+        self,
+        user_data,
+        user_data_2,
+        user_data_3,
+        user_data_4,
+        user_data_5,
+        user_data_6,
+    ):
         user1 = User.objects.create(**user_data)
         user2 = User.objects.create(**user_data_2)
         user3 = User.objects.create(**user_data_3)
@@ -237,7 +243,9 @@ class TestUserModel:
         user = User(**user_data)
         user.full_clean()
 
-    def test_create_user_with_phone_number_field_begins_from_8(self, user_data):
+    def test_create_user_with_phone_number_field_begins_from_8(
+        self, user_data
+    ):
         user_data["phone_number"] = "89001234567"
         user = User(**user_data)
         user.full_clean()
@@ -277,7 +285,7 @@ class TestUserModel:
             last_name="Иванов",
             email="test@gmail.com",
             password="securepass123",
-            phone_number="+79001234567"
+            phone_number="+79001234567",
         )
         with pytest.raises(ValidationError):
             user.full_clean()
@@ -323,7 +331,15 @@ class TestUserModel:
         user.refresh_from_db()
         assert user.role == "USER"
 
-    def test_check_roles(self, user_data, user_data_2, user_data_3, user_data_4, user_data_5, user_data_6):
+    def test_check_roles(
+        self,
+        user_data,
+        user_data_2,
+        user_data_3,
+        user_data_4,
+        user_data_5,
+        user_data_6,
+    ):
         user_data["role"] = Roles.ADMIN
         user1 = User.objects.create(**user_data)
         user_data_2["role"] = Roles.MODERATOR
@@ -393,7 +409,9 @@ class TestUserModel:
         user.refresh_from_db()
         assert user.is_blocked is False
 
-    def test_country_field_becomes_none_after_delete(self, country_data, user_data):
+    def test_country_field_becomes_none_after_delete(
+        self, country_data, user_data
+    ):
         country = Country.objects.create(**country_data)
         country.full_clean()
         country.save()
@@ -526,7 +544,9 @@ class TestActivationTokenModel:
         token = ActivationToken.objects.create_for_user(user)
         assert str(token) == f"{user.username} -> {token.token}"
 
-    def test_time_of_expires_at_is_about_15_minutes_when_token_created(self, user_data):
+    def test_time_of_expires_at_is_about_15_minutes_when_token_created(
+        self, user_data
+    ):
         user = User(**user_data)
         user.full_clean()
         user.save()

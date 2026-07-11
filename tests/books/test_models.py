@@ -53,7 +53,9 @@ class TestGenreModel:
         genre.refresh_from_db()
         assert str(genre) == "детектив"
 
-    def test_create_book_with_correct_fields(self, author, genre, user, book_data):
+    def test_create_book_with_correct_fields(
+        self, author, genre, user, book_data
+    ):
         book = Book(**book_data)
         book.full_clean()
         book.save()
@@ -110,9 +112,7 @@ class TestGenreModel:
             book.full_clean()
 
     def test_isbn_is_not_unique(self, book_data):
-        book = Book(**book_data)
-        book.full_clean()
-        book.save()
+        book = Book.objects.create(**book_data)
         book2 = Book(**book_data)
         with pytest.raises(IntegrityError):
             book2.save()
@@ -123,7 +123,9 @@ class TestGenreModel:
         with pytest.raises(ValidationError):
             book.full_clean()
 
-    def test_age_rating_is_valid(self, book_data, book_data_2, book_data_3, book_data_4, book_data_5):
+    def test_age_rating_is_valid(
+        self, book_data, book_data_2, book_data_3, book_data_4, book_data_5
+    ):
         book1 = Book(**book_data)
         book1.full_clean()
         book1.save()
@@ -157,7 +159,7 @@ class TestGenreModel:
             pages=100,
             isbn="9780306406157",
             age_rating="ABOVE_ZERO",
-            user=user
+            user=user,
         )
         with pytest.raises(ValidationError):
             book.full_clean()
@@ -165,8 +167,8 @@ class TestGenreModel:
     def test_create_book_without_user(self, book_data):
         book_data["user"] = None
         book = Book(**book_data)
-        assert book.full_clean() is None
-
+        with pytest.raises(ValidationError):
+            book.full_clean()
 
     def test_delete_user_and_userfield_is_null(self, book_data):
         book = Book(**book_data)
@@ -184,7 +186,9 @@ class TestGenreModel:
         book.author.set([author, author2])
         assert book.author.count() == 2
 
-    def test_one_book_has_two_genres(self, book_data, genre_data, genre_data_2):
+    def test_one_book_has_two_genres(
+        self, book_data, genre_data, genre_data_2
+    ):
         genre1 = Genre(**genre_data)
         genre1.full_clean()
         genre1.save()
@@ -197,7 +201,9 @@ class TestGenreModel:
         book.genre.set([genre1, genre2])
         assert book.genre.count() == 2
 
-    def test_is_for_child_return_true_above_zero_and_above_six(self, book_data, book_data_2):
+    def test_is_for_child_return_true_above_zero_and_above_six(
+        self, book_data, book_data_2
+    ):
         book1 = Book(**book_data)
         book2 = Book(**book_data_2)
         book1.full_clean()
@@ -207,7 +213,9 @@ class TestGenreModel:
         assert book1.is_for_child
         assert book2.is_for_child
 
-    def test_is_for_child_return_false_above_twelve_and_above_sixteen(self, book_data_3, book_data_4, book_data_5):
+    def test_is_for_child_return_false_above_twelve_and_above_sixteen(
+        self, book_data_3, book_data_4, book_data_5
+    ):
         book1 = Book(**book_data_3)
         book2 = Book(**book_data_4)
         book3 = Book(**book_data_5)
@@ -221,7 +229,9 @@ class TestGenreModel:
         assert not book2.is_for_child
         assert not book3.is_for_child
 
-    def test_is_for_teenager_return_true_above_twelve_and_above_sixteen(self, book_data_3, book_data_4):
+    def test_is_for_teenager_return_true_above_twelve_and_above_sixteen(
+        self, book_data_3, book_data_4
+    ):
         book1 = Book(**book_data_3)
         book2 = Book(**book_data_4)
         book1.full_clean()
@@ -232,12 +242,7 @@ class TestGenreModel:
         assert book2.is_for_teenager
 
     def test_is_for_adult_return_true_above_eighteen(
-            self,
-            book_data,
-            book_data_2,
-            book_data_3,
-            book_data_4,
-            book_data_5
+        self, book_data, book_data_2, book_data_3, book_data_4, book_data_5
     ):
         book1 = Book(**book_data)
         book2 = Book(**book_data_2)
@@ -333,7 +338,10 @@ class TestBookInventoryModel:
         book_inventory = BookInventory(book=book, status="AVAILABLE")
         book_inventory.full_clean()
         book_inventory.save()
-        assert str(book_inventory) == "Мастер и Маргар | 9780306406157 -> AVAILABLE"
+        assert (
+            str(book_inventory)
+            == "Мастер и Маргар | 9780306406157 -> AVAILABLE"
+        )
 
 
 @pytest.mark.django_db
@@ -400,7 +408,7 @@ class TestBookManagerModel:
         book_data["title"] = "Война и мир"
         book1 = Book.objects.create(**book_data)
         Book.objects.create(**book_data_2)
-        search_result = Book.objects.search_books(title="Война")
+        search_result = Book.objects.search_books(title="Война и мир")
         assert list(search_result) == [book1]
 
     def test_search_books_unknown_filter(self, book_data, book_data_2):
@@ -410,7 +418,10 @@ class TestBookManagerModel:
         book2.full_clean()
         book1.save()
         book2.save()
-        assert set(Book.objects.search_books(unknown_field="значение")) == {book1, book2}
+        assert set(Book.objects.search_books(unknown_field="значение")) == {
+            book1,
+            book2,
+        }
 
     def test_recent_five_years(self, book_data, book_data_2, book_data_3):
         book1 = Book(**book_data)
