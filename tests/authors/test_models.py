@@ -1,9 +1,10 @@
-import pytest
 from datetime import date
+
+import pytest
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
-from authors.models import Nationality, Author
+from authors.models import Author, Nationality
 
 
 @pytest.mark.django_db

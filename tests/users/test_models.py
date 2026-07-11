@@ -1,11 +1,12 @@
-import pytest
 from datetime import date
+
+import pytest
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils import timezone
 
 from users.constants import Roles
-from users.models import Country, User, ActivationToken
+from users.models import ActivationToken, Country, User
 
 
 @pytest.mark.django_db

@@ -1,10 +1,10 @@
+from datetime import date
+
 import pytest
 
 from authors.models import Author
-from datetime import date
-
 from books.constants import Status
-from books.models import Genre, Book
+from books.models import Book, Genre
 from users.models import User
 
 
