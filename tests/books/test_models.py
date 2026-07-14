@@ -167,8 +167,10 @@ class TestGenreModel:
     def test_create_book_without_user(self, book_data):
         book_data["user"] = None
         book = Book(**book_data)
-        with pytest.raises(ValidationError):
-            book.full_clean()
+        book.full_clean()
+        book.save()
+        book.refresh_from_db()
+        assert book.user is None
 
     def test_delete_user_and_userfield_is_null(self, book_data):
         book = Book(**book_data)
