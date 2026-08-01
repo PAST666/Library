@@ -29,51 +29,75 @@ class UserAdmin(BaseUserAdmin):
     )
 
     fieldsets = (
-        ("Основная информация", {
-            "fields": (
-                "username",
-                "password",
-                "role",
-            )
-        }),
-        ("Контактные данные", {
-            "fields": (
-                "first_name",
-                "last_name",
-                "email",
-                "phone_number",
-                "country",
-            )
-        }),
-        ("Статус", {
-            "fields": (
-                "is_active",
-                "is_blocked",
-            )
-        }),
-        ("Права доступа", {
-            "classes": ("collapse",),
-            "fields": (
-                "is_staff",
-                "is_superuser",
-                "groups",
-                "user_permissions",
-            )
-        }),
-        ("Системная информация", {
-            "classes": ("collapse",),
-            "fields": (
-                "last_login",
-                "date_joined",
-            ),
-        }),
+        (
+            "Основная информация",
+            {
+                "fields": (
+                    "username",
+                    "password",
+                    "role",
+                )
+            },
+        ),
+        (
+            "Контактные данные",
+            {
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "phone_number",
+                    "country",
+                )
+            },
+        ),
+        (
+            "Статус",
+            {
+                "fields": (
+                    "is_active",
+                    "is_blocked",
+                )
+            },
+        ),
+        (
+            "Права доступа",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                ),
+            },
+        ),
+        (
+            "Системная информация",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "last_login",
+                    "date_joined",
+                ),
+            },
+        ),
     )
 
     add_fieldsets = (
-        (None, {
-            "classes": ("wide",),
-            "fields": ("username", "email", "password1", "password2", "role"),
-        }),
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": (
+                    "username",
+                    "email",
+                    "password1",
+                    "password2",
+                    "role",
+                ),
+            },
+        ),
     )
 
 

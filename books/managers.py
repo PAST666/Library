@@ -15,8 +15,8 @@ class BookManager(models.Manager):
         valid_filters: dict[str, str] = {
             "title": "title__icontains",
             "genre": "genre",
-            "publication_year" : "publication_year",
-            "pages": "pages"
+            "publication_date": "publication_date__year",
+            "pages": "pages",
         }
 
         filters: dict[str, Any] = {}
@@ -34,8 +34,7 @@ class BookManager(models.Manager):
     def _annotate_by(self, status) -> models.QuerySet:
         return self.annotate(
             status_count=Count(
-                "book_inventory",
-                filter=Q(book_inventory__status=status)
+                "book_inventory", filter=Q(book_inventory__status=status)
             )
         ).filter(status_count__gt=0)
 
@@ -52,4 +51,6 @@ class BookManager(models.Manager):
         return self.filter(genre=genre)
 
     def recent(self, years: int = 5) -> models.QuerySet:
-        return self.filter(publication_date__year__gte=datetime.now().year - years)
+        return self.filter(
+            publication_date__year__gte=datetime.now().year - years
+        )

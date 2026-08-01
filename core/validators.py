@@ -4,10 +4,8 @@ from django.utils.translation import gettext_lazy as _
 
 class KirillicLettersValidator(RegexValidator):
     code = "invalid_name"
-    message = _(
-        "Имя должно содержать только буквы кириллического алфавита"
-    )
-    regex = r"^[а-яА-ЯёЁ]"
+    message = _("Имя должно содержать только буквы кириллического алфавита")
+    regex = r"^[а-яА-ЯёЁ]+(?:-[а-яА-ЯёЁ]+)*$"
 
 
 class EmailValidator(RegexValidator):
@@ -25,4 +23,4 @@ class PhoneNumberValidator(RegexValidator):
         "далее - 7 цифр группами: 3 цифры, 2 цифры, 2 цифры, слитно или с использованием дефисов и/или пробелов. "
         "Допускается весь номер указывать слитно."
     )
-    regex = r"^(\+7|8)?[\s\-]?\(?[9][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}"
+    regex = r"^(\+7|8)[\s\-]?\(?[9][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$"

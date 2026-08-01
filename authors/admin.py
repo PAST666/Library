@@ -5,7 +5,10 @@ from .models import Author, Nationality
 
 @admin.register(Nationality)
 class NationalityAdmin(admin.ModelAdmin):
-    list_display = ("nationality", "code",)
+    list_display = (
+        "nationality",
+        "code",
+    )
     ordering = ("nationality",)
 
 

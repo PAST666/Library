@@ -14,7 +14,7 @@ class Command(BaseCommand):
             "filepath",
             nargs="?",
             default="data/nationalities.json",
-            help="Путь до файла с национальностями"
+            help="Путь до файла с национальностями",
         )
 
     def handle(self, *args, **kwargs):
@@ -22,11 +22,15 @@ class Command(BaseCommand):
 
         try:
             self.upload_nationalities(filepath)
-            self.stdout.write(self.style.SUCCESS("Список национальностей успешно загружен"))
+            self.stdout.write(
+                self.style.SUCCESS("Список национальностей успешно загружен")
+            )
         except FileNotFoundError:
             self.stdout.write(self.style.ERROR(f"Файл '{filepath}' не найден"))
         except json.JSONDecodeError as e:
-            self.stdout.write(self.style.ERROR(f"Ошибка декодирования JSON: {e}"))
+            self.stdout.write(
+                self.style.ERROR(f"Ошибка декодирования JSON: {e}")
+            )
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Произошла ошибка: {e}"))
 
@@ -46,8 +50,13 @@ class Command(BaseCommand):
     def upload_nationalities_from_json(self, filepath: str) -> None:
         with open(filepath, "r", encoding="utf-8") as f:
             data = json.load(f)
-        nationalities = [Nationality(nationality=n["nationality"], code=n["code"]) for n in data]
-        created = Nationality.objects.bulk_create(nationalities, ignore_conflicts=True)
+        nationalities = [
+            Nationality(nationality=n["nationality"], code=n["code"])
+            for n in data
+        ]
+        created = Nationality.objects.bulk_create(
+            nationalities, ignore_conflicts=True
+        )
         if len(created):
             print(f"Добавлено {len(created)} национальностей")
         else:

@@ -27,6 +27,6 @@ class AuthorManager(models.Manager):
         return queryset
 
     def _annotate_by(self) -> models.QuerySet:
-        return self.annotate(
-            books_count=Count("books")
-        ).filter(books_count__gt=0)
+        return self.annotate(books_count=Count("books")).filter(
+            books_count__gt=0
+        )

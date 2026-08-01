@@ -2,6 +2,8 @@ import uuid
 from datetime import date
 
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
+from django.core.validators import MinLengthValidator
 from django.db import models
 from django.db.models import Q
 from django.utils import timezone
@@ -24,8 +26,17 @@ from .managers import ActivationTokenManager, UserManager
 
 
 class Country(models.Model):
-    name = models.CharField(verbose_name="Название страны", max_length=MAX_COUNTRY_LENGTH, unique=True)
-    code = models.CharField(verbose_name="Буквенный код страны", max_length=MAX_CODE_LENGTH, unique=True)
+    name = models.CharField(
+        verbose_name="Название страны",
+        max_length=MAX_COUNTRY_LENGTH,
+        unique=True,
+    )
+    code = models.CharField(
+        verbose_name="Буквенный код страны",
+        max_length=MAX_CODE_LENGTH,
+        unique=True,
+        validators=[MinLengthValidator(2)],
+    )
 
     class Meta:
         verbose_name = "Страна"
@@ -51,7 +62,7 @@ class User(AbstractUser):
         "Почта",
         max_length=MAX_EMAIL_LENGTH,
         unique=True,
-        validators=[EmailValidator()]
+        validators=[EmailValidator()],
     )
     phone_number = models.CharField(
         "Телефон",
@@ -59,24 +70,17 @@ class User(AbstractUser):
         unique=True,
         validators=[PhoneNumberValidator()],
         null=True,
-        blank=True
+        blank=True,
     )
-    birth_date = models.DateField(
-        "Дата рождения",
-        blank=False,
-        null=False
-    )
+    birth_date = models.DateField("Дата рождения", blank=False, null=False)
     country = models.ForeignKey(
-        Country,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
+        Country, on_delete=models.SET_NULL, null=True, blank=True
     )
     role = models.CharField(
         "Роль",
         choices=Roles.choices,
         max_length=MAX_COUNTRY_LENGTH,
-        default=Roles.USER
+        default=Roles.USER,
     )
     is_blocked = models.BooleanField("Заблокирован", default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -90,12 +94,29 @@ class User(AbstractUser):
         verbose_name_plural = "Пользователи"
         ordering = ("username",)
 
+    @staticmethod
+    def validate_birth_date(value):
+        if value and value > date.today():
+            raise ValidationError(
+                "Дата рождения не может быть в будущем.", code="future_date"
+            )
+
+    def clean(self):
+        super().clean()
+        if self.birth_date:
+            self.validate_birth_date(self.birth_date)
+
     @property
     def age(self) -> int | None:
         if self.birth_date:
             today = date.today()
-            return today.year - self.birth_date.year - (
-                (today.month, today.day) < (self.birth_date.month, self.birth_date.day)
+            return (
+                today.year
+                - self.birth_date.year
+                - (
+                    (today.month, today.day)
+                    < (self.birth_date.month, self.birth_date.day)
+                )
             )
         return None
 
